@@ -77,6 +77,6 @@ class Cryptoex:
                     r[default_dkey] = str(round(float(r[default_dkey]) * 100, 2)) + "%"
             result.append(r)  # adding intermediate data to the result
         return result, status_code
-    
+
     def ticker_data(self):
         pass
