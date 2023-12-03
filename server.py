@@ -18,10 +18,11 @@ default = {
 
 #   the list of errors returned by the server to an incorrect request from the websocket client
 Errors = {
-        "JSONDecodeError": "request is not JSON string",
-        "BadRequestError": "exchange response isn't JSON string. Please repair your request",
-        "TypeError": "some parameters have an unknown value or an incorrect type",
-        "BadTickerError": "ticker must contain `-` as a separator",
+        "WRF 0x01": "request is not JSON string",    # FE 0x01 | JSONDecodeError
+        "RPM 0x01": "the required argument 'type' or 'data' wasn't defined",    # | Key Error
+        "BExR 0x01": "The exchange's response code is 400 or 404. Please check your request",    # Cryptoex.BadRequestError
+        "WPV 0x01": "some parameters have an unknown value or an incorrect value's type",  # TypeError
+        "WPV 0x02": "ticker must contain `-` as a separator",
     }
 
 #   there are a set of web clients at current moment
@@ -30,17 +31,22 @@ Errors = {
 sockets = dict()
 
 
-def websocket_send(websocket, func, thread_id, **kwargs):
+def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs): # безопасная отправка сообщений websocket
+    if len(err_msg) > 0:
+        try:
+            websocket.send(err_msg)
+        except websockets.exceptions.ConnectionClosedOK: pass
+        finally: return
     response = "" # чтобы не возникало UnboundLocalError
     error = True
     try:
         response, error = json.dumps(func(**kwargs)), False
     except Cryptoex.BadRequestError:
-        response = Errors["BadRequestError"]
+        response = Errors["BExR 0x01: "+Errors["BExR 0x01"]]
     except (TypeError, KeyError):
-        response = Errors["TypeError"]
+        response = Errors["WPV 0x01: "+Errors["WPV 0x01"]]
     except Cryptoex.BadTickerError:
-        response = Errors["BadTickerError"]
+        response = Errors["WPV 0x02: "+Errors["WPV 0x02"]]
     if thread_id in sockets[str(websocket.id)]:      # если поступит запрос на отмену потока
         try:
             websocket.send(response)
@@ -75,7 +81,7 @@ def send_exchange_data(exchange, websocket, thread_id, **kwargs):
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
     :return: None
     """
-    count, timeout, threads = kwargs["count"], kwargs["timeout"], set()
+    count, timeout, threads = kwargs.get("count"), kwargs.get("timeout"), set()
     while thread_id in sockets[str(websocket.id)]:
         if count == 0:
             if not thread_array_is_alive(threads): remove_thread(str(websocket.id), thread_id)
@@ -99,10 +105,9 @@ def send_ticker_data(websocket, thread_id, **kwargs):
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
     :return: None
     """
-    count, timeout = kwargs["count"], kwargs["timeout"]
+    count, timeout, threads = kwargs.get("count"), kwargs.get("timeout"), set()
     exchanges = cryptoex.exchanges.keys() if kwargs.get("exchange") is None else [kwargs.get("exchange")]
     ticker = kwargs.get("ticker")
-    threads = set()
     # когда count == 0, переходим в режим ожидания завершения всех потоков
     while thread_id in sockets[str(websocket.id)]: # если count < 0 - бесконечный цикл
         if count == 0:         #  если count == 0 - будем ждать, когда завершатся все запушенные потоки
@@ -154,7 +159,11 @@ def manage(request, websocket):
     :param websocket: the client's websocket class
     :return: None
     """
-
+    try:
+        s_type, s_data = request['type'], request['data']
+    except KeyError:
+        websocket_send(websocket, err_msg="RPM 0x01: "+Errors["RPM 0x01"])
+        return
     thread_id = hex(abs(hash(str(request))))
     if thread_id in sockets[str(websocket.id)]:
         remove_thread(str(websocket.id), thread_id)
@@ -165,8 +174,8 @@ def manage(request, websocket):
                   "websocket": websocket,
                   "count": int(request.get('count', default["count"])),
                   "timeout": int(request.get('timeout', default["timeout"]))}
-    kwargs.update(request['data'])
-    threading.Thread(target=stream_functions[request['type']], kwargs=kwargs).start()
+    kwargs.update(s_data)
+    threading.Thread(target=stream_functions[s_type], kwargs=kwargs).start()
 
 
 def handle(websocket):
@@ -179,12 +188,11 @@ def handle(websocket):
         ws_id = str(websocket.id)
         if ws_id not in sockets:
             sockets[ws_id] = set()
+        print(request)
         try:
             request = json.loads(request)
         except json.JSONDecodeError:
-            error = Errors['JSONDecodeError']
-            websocket.send(error)
-            print(error)
+            websocket.send('WRF 0x01: '+Errors['WRF 0x01'])
             continue
         manage(request, websocket)
 
