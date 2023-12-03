@@ -12,19 +12,56 @@ default = {
         "timeout": 1,
         "count": 1,
         "interval": "1d",
-        "limit": 365
+        "limit": 365,
+        "alive_threads_viewing_delay": .2 # настройка сервера , задержка при просмотре живых потоков
     }
 
 #   the list of errors returned by the server to an incorrect request from the websocket client
 Errors = {
         "JSONDecodeError": "request is not JSON string",
+        "BadRequestError": "exchange response isn't JSON string. Please repair your request",
+        "TypeError": "some parameters have an unknown value or an incorrect type",
+        "BadTickerError": "ticker must contain `-` as a separator",
     }
 
 #   there are a set of web clients at current moment
-sockets = set()
 
 
-socket_threads = dict()
+sockets = dict()
+
+
+def websocket_send(websocket, func, thread_id, **kwargs):
+    response = "" # чтобы не возникало UnboundLocalError
+    error = True
+    try:
+        response, error = json.dumps(func(**kwargs)), False
+    except Cryptoex.BadRequestError:
+        response = Errors["BadRequestError"]
+    except (TypeError, KeyError):
+        response = Errors["TypeError"]
+    except Cryptoex.BadTickerError:
+        response = Errors["BadTickerError"]
+    if thread_id in sockets[str(websocket.id)]:      # если поступит запрос на отмену потока
+        try:
+            websocket.send(response)
+        except websockets.exceptions.ConnectionClosedOK: pass
+        finally:
+            if error:
+                remove_thread(str(websocket.id), thread_id)
+
+
+def remove_thread(ws_id, thread_id):
+    if ws_id in sockets:
+        if thread_id in sockets[ws_id]:
+            sockets[ws_id].remove(thread_id)
+            print("thread removed")
+
+
+def thread_array_is_alive(threads):
+    flag = False
+    for thread in threads:
+        flag |= thread.is_alive()
+    return flag
 
 
 def send_exchange_data(exchange, websocket, thread_id, **kwargs):
@@ -38,32 +75,51 @@ def send_exchange_data(exchange, websocket, thread_id, **kwargs):
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
     :return: None
     """
-    count, timeout = kwargs.get("count", default["count"]), kwargs.get("timeout", default["timeout"])
-    while (thread_id in socket_threads.get(kwargs['ws_id'], str(websocket.id))) and (count != 0):
-        websocket.send(json.dumps(cryptoex.exchange_data(exchange)))
+    count, timeout, threads = kwargs["count"], kwargs["timeout"], set()
+    while thread_id in sockets[str(websocket.id)]:
+        if count == 0:
+            if not thread_array_is_alive(threads): remove_thread(str(websocket.id), thread_id)
+            time.sleep(default["alive_threads_viewing_delay"])
+            continue
+        _args, _kwargs = [websocket, cryptoex.exchange_data, thread_id], {"exchange": exchange}
+        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)   # тут не надо исключения
+        thread.start()
+        threads.add(thread)
         count -= 1
         time.sleep(timeout)
 
 
-def send_ticker_data(ticker, websocket, thread_id, **kwargs):
+def send_ticker_data(websocket, thread_id, **kwargs):
     """
     A function that sends statistics on the specified ticker from the exchange in real time
     The data is sent in the last 24 hours
 
-    :param ticker: ticker to send information about
     :param websocket: websocket client to which the response should be sent
     :param thread_id: the ID of the thread used by manage function to manage the list of threads
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
     :return: None
     """
-    count, timeout = kwargs.get("count", default["count"]), kwargs.get("timeout", default["timeout"])
-    while (thread_id in socket_threads.get(kwargs['ws_id'], str(websocket.id))) and (count != 0):
-        websocket.send(json.dumps(cryptoex.ticker_data(ticker, kwargs.get("exchange", "all"))))
+    count, timeout = kwargs["count"], kwargs["timeout"]
+    exchanges = cryptoex.exchanges.keys() if kwargs.get("exchange") is None else [kwargs.get("exchange")]
+    ticker = kwargs.get("ticker")
+    threads = set()
+    # когда count == 0, переходим в режим ожидания завершения всех потоков
+    while thread_id in sockets[str(websocket.id)]: # если count < 0 - бесконечный цикл
+        if count == 0:         #  если count == 0 - будем ждать, когда завершатся все запушенные потоки
+            if not thread_array_is_alive(threads): remove_thread(str(websocket.id), thread_id)
+            time.sleep(default["alive_threads_viewing_delay"]) # ждать, пока все потоки закончатся, после чего завершить работу
+            continue
+        for exchange in exchanges:
+            print(exchange)
+            _args, _kwargs = [websocket, cryptoex.ticker_data, thread_id], {"ticker": ticker, "exchange": exchange}
+            thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
+            thread.start()
+            threads.add(thread)
         count -= 1
         time.sleep(timeout)
 
 
-def send_klines(exchange, ticker, websocket, thread_id, **kwargs):
+def send_klines(websocket, thread_id, **kwargs):
     """
     A function that sends data for plotting at a specified interval to a websocket client
 
@@ -75,8 +131,19 @@ def send_klines(exchange, ticker, websocket, thread_id, **kwargs):
     :return: None
     """
     interval, limit = kwargs.get("interval", default["interval"]), kwargs.get("limit", default["limit"])
-    websocket.send(cryptoex.klines(exchange, ticker, interval, limit))
-    socket_threads[kwargs.get("ws_id", str(websocket.id))].remove(thread_id)
+    ticker, exchange = kwargs.get("ticker"), kwargs.get("exchange")
+    _args, _kwargs = [websocket, cryptoex.klines, thread_id], {"ticker": ticker, "exchange": exchange, "interval": interval, "limit": limit}
+    thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
+    thread.start()
+    while thread_array_is_alive([thread]):
+        time.sleep(default["alive_threads_viewing_delay"])
+    remove_thread(str(websocket.id), thread_id)
+
+
+stream_functions = {
+            "exchange_stream": send_exchange_data,
+            "klines_stream": send_klines,
+            "ticker_stream": send_ticker_data}
 
 
 def manage(request, websocket):
@@ -87,23 +154,17 @@ def manage(request, websocket):
     :param websocket: the client's websocket class
     :return: None
     """
-    ws_id = str(websocket.id)
-    stream_functions = {
-            "exchange_stream": send_exchange_data,
-            "klines_stream": send_klines,
-            "ticker_stream": send_ticker_data}
-    thread_id = "&".join([x if type(x) is str else "&".join([y for y in x.values()]) for x in request.values()])
-    thread_id = hex(hash(thread_id))
-    if thread_id in socket_threads[ws_id]:
-        socket_threads[ws_id].remove(thread_id)
+
+    thread_id = hex(abs(hash(str(request))))
+    if thread_id in sockets[str(websocket.id)]:
+        remove_thread(str(websocket.id), thread_id)
         return
-    socket_threads[ws_id].add(thread_id)
+    sockets[str(websocket.id)].add(thread_id)
     kwargs = {
                   "thread_id": thread_id,
                   "websocket": websocket,
-                  "ws_id": ws_id,
-                  "count": int(request.get('amount', -1)),
-                  "timeout": request.get('timeout', 1)}
+                  "count": int(request.get('count', default["count"])),
+                  "timeout": int(request.get('timeout', default["timeout"]))}
     kwargs.update(request['data'])
     threading.Thread(target=stream_functions[request['type']], kwargs=kwargs).start()
 
@@ -117,12 +178,11 @@ def handle(websocket):
     for request in websocket:
         ws_id = str(websocket.id)
         if ws_id not in sockets:
-            sockets.add(ws_id)
-            socket_threads[ws_id] = set()
+            sockets[ws_id] = set()
         try:
             request = json.loads(request)
         except json.JSONDecodeError:
-            error = json.dumps({"Error": Errors['JSONDecodeError'], "code": 400})
+            error = Errors['JSONDecodeError']
             websocket.send(error)
             print(error)
             continue
