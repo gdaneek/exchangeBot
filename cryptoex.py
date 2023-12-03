@@ -2,7 +2,6 @@ import requests
 
 
 class Cryptoex:
-
     exchanges = {
         'Binance': {
             "ticker_stream": "https://api.binance.com/api/v3/ticker/24hr",
@@ -26,41 +25,43 @@ class Cryptoex:
     exchange_dkey = {
         "Binance":
             {
-                "ticker_stream": ["lastPrice","priceChangePercent"],
-                "exchange_stream": ["lastPrice", "priceChangePercent"]
-             },
+                "ticker_stream": ["lastPrice", "priceChangePercent"],
+                "exchange_stream": ["lastPrice", "priceChangePercent"]},
         "Bybit":
             {
                 "ticker_stream": ['lp', None],
-                "exchange_stream": ['lp', None]
-            },
+                "exchange_stream": ['lp', None]},
         "KuCoin":
             {
                 "ticker_stream": ['last','changeRate'],
-                "exchange_stream": ["last", "changeRate"]
-            },
+                "exchange_stream": ["last", "changeRate"]},
         "BitMart":
             {
                 "ticker_stream": ["last", "fluctuation"],
-                "exchange_stream": [1, 7]
-            }
+                "exchange_stream": [1, 7]}
     }
+
+    class BadExchangeError(Exception): pass
+    class BadTickerError(Exception): pass
+    class InitError(Exception): pass
+
+    class BadRequestError(Exception): pass
 
     def __init__(self):
         for exchange in self.exchange_dkey:
             for dkey in self.exchange_dkey[exchange]:
                 keys = self.exchange_dkey[exchange][dkey]
                 if len(keys) < len(self.default_dkey):
-                    print(f"{exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
-                    self.exchange_dkey[exchange][dkey].extend([None]*(len(self.default_dkey)-len(keys)))
+                    #print(f"{exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
+                    raise self.InitError(f"Error: {exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
+                    #self.exchange_dkey[exchange][dkey].extend([None]*(len(self.default_dkey)-len(keys)))
 
-    def klines(self, exchange, ticker, interval='1d', lim=365):
-        ticker = ticker.replace("-",self.exchanges[exchange]["ticker_sep"])
-        response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?symbol={ticker}&interval={interval}&limit={lim}').json()
-
-        # tm_conv = lambda x: f"{'0'*int(x.tm_mday<10)}{x.tm_mday}.{'0'*int(x.tm_mday<10)}{x.tm_mon}.{x.tm_year}"
-        # from_ = tm_conv(time.gmtime(int(response[0][0])/1000))
-        # to_ = tm_conv(time.gmtime(int(response[-1][0])/1000))
+    def klines(self, exchange, ticker, interval, limit):
+        ticker = ticker.replace("-", self.exchanges[exchange]["ticker_sep"])
+        try:
+            response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?symbol={ticker}&interval={interval}&limit={limit}').json()
+        except Exception:
+            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         from_t, to_t = int(response[0][0])/1000, int(response[-1][0])/1000
         conv_interval = {"1d": 86400}
         close_price = [x[4] for x in response]
@@ -70,11 +71,12 @@ class Cryptoex:
 
     def exchange_data(self, exchange):  # get all exchange tickers
         if exchange not in self.exchanges:  # exchange is not supported
-            return f"Error: unsupported or incorrect exchange {exchange}", 404
+            raise self.BadExchangeError(f"Error: unsupported or incorrect exchange {exchange}")
         result = list()    # value to return
-        response = requests.get(self.exchanges[exchange]["exchange_stream"])    # the exchange's response to the request
-        status_code = response.status_code  # response code (e.g. 200,404)
-        response = response.json()  # convert to json format
+        try:
+            response = requests.get(self.exchanges[exchange]["exchange_stream"]).json()    # the exchange's response to the request
+        except Exception:
+            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result', 'list'], "Binance": [], "KuCoin": ['data', 'ticker']}
         for i in range(len(result_key[exchange])):
             response = response[result_key[exchange][i]]    # extracting the data from the exchange's response
@@ -91,14 +93,17 @@ class Cryptoex:
                 if default_dkey == "Fluctuation":   # convert the price change into a percentage
                     r[default_dkey] = str(round(float(r[default_dkey]) * 100, 2)) + "%"
             result.append(r)    # adding intermediate data to the result
-        return result, status_code
+        return result
 
     def ticker_data(self, ticker, exchange):
+        # key Error на exchange
         if "-" not in ticker:
-            return f"Error: Bad ticker", 404
-        response = requests.get(f"{self.exchanges[exchange]['ticker_stream']}?symbol={ticker.replace('-',self.exchanges[exchange]['ticker_sep'])}")  # the exchange's response to the request
-        status_code = response.status_code
-        response = response.json()
+            raise self.BadTickerError("ticker must contain `-` as a separator")
+        ticker = ticker.replace('-', self.exchanges[exchange]['ticker_sep'])
+        try:
+            response = requests.get(f"{self.exchanges[exchange]['ticker_stream']}?symbol={ticker}").json()
+        except Exception:
+            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result'], "Binance": [], "KuCoin": ['data']}
         for i in range(len(result_key[exchange])):
             response = response[result_key[exchange][i]]  # extracting the data from the exchange's response
