@@ -2,6 +2,20 @@ import requests
 
 
 class Cryptoex:
+    """
+    A class for working with cryptoexchange data
+
+    Attributes:
+    ^^^^^^^^^^^
+
+    :exchanges: a dict of URLs of supported exchanges for each type of processing function
+    :default_dkey: default keys with which the processed exchange's response is returned
+    :exchange_dkey: the keys of the exchange, with which the required data is returned
+
+    Methods:
+    ^^^^^^^^
+
+    """
     exchanges = {
         'Binance': {
             "ticker_stream": "https://api.binance.com/api/v3/ticker/24hr",
@@ -44,19 +58,37 @@ class Cryptoex:
     class BadExchangeError(Exception): pass
     class BadTickerError(Exception): pass
     class InitError(Exception): pass
-
     class BadRequestError(Exception): pass
 
     def __init__(self):
+        """
+            Function checks whether the default key matches all the keys of the exchange.
+
+            :raise InitError: If it is impossible to establish a match, the InitError will be thrown
+            :rtype: none
+        """
         for exchange in self.exchange_dkey:
             for dkey in self.exchange_dkey[exchange]:
                 keys = self.exchange_dkey[exchange][dkey]
                 if len(keys) < len(self.default_dkey):
-                    #print(f"{exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
                     raise self.InitError(f"Error: {exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
-                    #self.exchange_dkey[exchange][dkey].extend([None]*(len(self.default_dkey)-len(keys)))
 
-    def klines(self, exchange, ticker, interval, limit):
+    def klines(self, ticker, interval, limit):
+        """Function of sending data for plotting
+
+        The function makes a request to the exchange and allocates from it the start and end times,
+        and the cost of the ticker at each time multiple of the interval.
+        If the request fails, the BadRequestError will be thrown.
+        The data for plotting the ticker is provided by the exchange Binance
+
+        :param ticker: the ticker for which you need to build a graph
+        :param interval: The step with which you need to receive the cost (e.g. 1h, 1d, 1w)
+        :param limit: the number of steps from the present time with defined interval back
+        :return: exchange name, ticker, start and end time, interval, array of ticker values at each step
+        :rtype: dict
+
+        """
+        exchange = 'Binance'
         ticker = ticker.replace("-", self.exchanges[exchange]["ticker_sep"])
         try:
             response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?symbol={ticker}&interval={interval}&limit={limit}').json()
@@ -70,6 +102,16 @@ class Cryptoex:
         return result
 
     def exchange_data(self, exchange):  # get all exchange tickers
+        """
+        Function to get the data of all tickers of a defined exchange
+
+        :raise BadExchangeError: the exchange is not supported
+        :raise BadRequestError: the exchange's response is not correct or has an error code
+        :param exchange: one of the supported exchanges
+        :return: A list containing the name of the ticker, the cost and its change in 24 hours
+        :rtype: list
+
+        """
         if exchange not in self.exchanges:  # exchange is not supported
             raise self.BadExchangeError(f"Error: unsupported or incorrect exchange {exchange}")
         result = list()    # value to return
@@ -91,12 +133,23 @@ class Cryptoex:
                     continue
                 r[default_dkey] = exchange_ticker[exchange_dkey]    # saving the exchange value with the default key
                 if default_dkey == "Fluctuation":   # convert the price change into a percentage
-                    r[default_dkey] = str(round(float(r[default_dkey]) * 100, 2)) + "%"
-            result.append(r)    # adding intermediate data to the result
+                    if exchange != "Binance":
+                        r[default_dkey] = str(round(float(r[default_dkey]) * 100, 2))
+                    r[default_dkey] += "%"
+            result.append(r)
         return result
 
     def ticker_data(self, ticker, exchange):
-        # key Error на exchange
+        """
+        Function to get the data of defined ticker of defined exchange
+
+        :raise BadTickerError: The ticker must contain `-` as a separator
+        :raise BadRequestError: the exchange's response is not correct or has an error code
+        :param ticker: the name of the ticker(e.g. BTC-USDT, ETH-USDT)
+        :param exchange: one of the supported exchanges
+        :return: A list containing the name of the exchange, ticker, the cost and its change in 24 hours
+        :rtype: list
+        """
         if "-" not in ticker:
             raise self.BadTickerError("ticker must contain `-` as a separator")
         ticker = ticker.replace('-', self.exchanges[exchange]['ticker_sep'])
@@ -111,10 +164,12 @@ class Cryptoex:
         for i in range(len(self.default_dkey)):    # mapping of default keys to the keys used by the exchange
             exchange_dkey = self.exchange_dkey[exchange]["ticker_stream"][i]  # dkey means data key
             default_dkey = self.default_dkey[i]
-            if exchange_dkey is None:   # if the key mapping is not defined
+            if exchange_dkey is None:                                       # if the key mapping is not defined
                 result[default_dkey] = ""
                 continue
-            result[default_dkey] = response[exchange_dkey]    # saving the exchange value with the default key
-            if default_dkey == "Fluctuation" and exchange != "Binance":   # convert the price change into a percentage
-                result[default_dkey] = str(round(float(result[default_dkey]) * 100, 2)) + "%"
+            result[default_dkey] = response[exchange_dkey]
+            if default_dkey == "Fluctuation":     # convert the price change into a percentage
+                if exchange != "Binance":
+                    result[default_dkey] = str(round(float(result[default_dkey]) * 100, 2))
+                result[default_dkey] += "%"
         return result
