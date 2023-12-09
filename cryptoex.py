@@ -12,6 +12,11 @@ class Cryptoex:
     :default_dkey: default keys with which the processed exchange's response is returned
     :exchange_dkey: the keys of the exchange, with which the required data is returned
 
+    :exception BadExchangeError: unsupported or incorrect exchange
+    :exception BadTickerError: ticker not contain `-` as a separator
+    :exception InitError: no match was found between the default key and the exchange key
+    :exception The exchange's response does not match the format for this request
+
     Methods:
     ^^^^^^^^
 
@@ -47,7 +52,7 @@ class Cryptoex:
                 "exchange_stream": ['lp', None]},
         "KuCoin":
             {
-                "ticker_stream": ['last','changeRate'],
+                "ticker_stream": ['last', 'changeRate'],
                 "exchange_stream": ["last", "changeRate"]},
         "BitMart":
             {
@@ -71,7 +76,8 @@ class Cryptoex:
             for dkey in self.exchange_dkey[exchange]:
                 keys = self.exchange_dkey[exchange][dkey]
                 if len(keys) < len(self.default_dkey):
-                    raise self.InitError(f"Error: {exchange} {dkey} must be supplemented with {len(self.default_dkey)-len(keys)} keys")
+                    diff = len(self.default_dkey)-len(keys)
+                    raise self.InitError(f"Error: {exchange} {dkey} must be supplemented with {diff} keys")
 
     def klines(self, ticker, interval, limit):
         """Function of sending data for plotting
@@ -91,7 +97,8 @@ class Cryptoex:
         exchange = 'Binance'
         ticker = ticker.replace("-", self.exchanges[exchange]["ticker_sep"])
         try:
-            response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?symbol={ticker}&interval={interval}&limit={limit}').json()
+            params = f"symbol={ticker}&interval={interval}&limit={limit}"
+            response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?{params}').json()
         except Exception:
             raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         from_t, to_t = int(response[0][0])/1000, int(response[-1][0])/1000
@@ -116,19 +123,19 @@ class Cryptoex:
             raise self.BadExchangeError(f"Error: unsupported or incorrect exchange {exchange}")
         result = list()    # value to return
         try:
-            response = requests.get(self.exchanges[exchange]["exchange_stream"]).json()    # the exchange's response to the request
+            response = requests.get(self.exchanges[exchange]["exchange_stream"]).json()   
         except Exception:
             raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result', 'list'], "Binance": [], "KuCoin": ['data', 'ticker']}
         for i in range(len(result_key[exchange])):
-            response = response[result_key[exchange][i]]    # extracting the data from the exchange's response
+            response = response[result_key[exchange][i]]    # extracting useful data from the exchange's response
         for exchange_ticker in response:    # for every ticker
             tp_key = {"BitMart": 0, "Bybit": 's', "Binance": "symbol", "KuCoin": "symbol"}  # ticker symbol key
-            r = {"Exchange": exchange, "Trade pair": exchange_ticker[tp_key[exchange]]}    # intermediate result
+            r = {"Exchange": exchange, "Trade pair": exchange_ticker[tp_key[exchange]]}    # form result
             for i in range(len(self.default_dkey)):    # mapping of default keys to the keys used by the exchange
-                exchange_dkey = self.exchange_dkey[exchange]["exchange_stream"][i]  # dkey means data key
+                exchange_dkey = self.exchange_dkey[exchange]["exchange_stream"][i]
                 default_dkey = self.default_dkey[i]
-                if exchange_dkey is None:   # if the key mapping is not defined
+                if exchange_dkey is None:   # if the key mapping isn't defined by exchange
                     r[default_dkey] = ""
                     continue
                 r[default_dkey] = exchange_ticker[exchange_dkey]    # saving the exchange value with the default key
@@ -154,7 +161,8 @@ class Cryptoex:
             raise self.BadTickerError("ticker must contain `-` as a separator")
         ticker = ticker.replace('-', self.exchanges[exchange]['ticker_sep'])
         try:
-            response = requests.get(f"{self.exchanges[exchange]['ticker_stream']}?symbol={ticker}").json()
+            params = f"symbol={ticker}"
+            response = requests.get(f"{self.exchanges[exchange]['ticker_stream']}?{params}").json()
         except Exception:
             raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result'], "Binance": [], "KuCoin": ['data']}
@@ -162,7 +170,7 @@ class Cryptoex:
             response = response[result_key[exchange][i]]  # extracting the data from the exchange's response
         result = {"Exchange": exchange, "Trade pair": ticker}
         for i in range(len(self.default_dkey)):    # mapping of default keys to the keys used by the exchange
-            exchange_dkey = self.exchange_dkey[exchange]["ticker_stream"][i]  # dkey means data key
+            exchange_dkey = self.exchange_dkey[exchange]["ticker_stream"][i]
             default_dkey = self.default_dkey[i]
             if exchange_dkey is None:                                       # if the key mapping is not defined
                 result[default_dkey] = ""
