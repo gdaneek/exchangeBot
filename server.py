@@ -19,7 +19,8 @@ default = {
 #   the list of errors returned by the server to an incorrect request from the websocket client
 Errors = {
         "WRF 0x01": "request is not JSON string",    # FE 0x01 | JSONDecodeError
-        "RPM 0x01": "the required argument 'type' or 'data' wasn't defined",    # | Key Error
+        "RPM 0x01": "the required argument 'type' wasn't defined",    # | Key Error
+        "RPM 0x02": "the required argument 'data' wasn't defined",    # | Key Error
         "BExR 0x01": "The exchange's response code is 400 or 404. Please check your request",    # Cryptoex.BadRequestError
         "WPV 0x01": "some parameters have an unknown value or an incorrect value's type",  # TypeError
         "WPV 0x02": "ticker must contain `-` as a separator",
@@ -31,13 +32,25 @@ Errors = {
 sockets = dict()
 
 
-def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs): # безопасная отправка сообщений websocket
+def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
+    """a function that makes sending messages safe
+
+    The function accepts a websocket, a function whose return value must be sent, and arguments for this function.
+    If you need to send only an error code, the err_msg parameter must not be empty.
+
+    :param websocket: the websocket to send the message to
+    :param func: a function whose result will be a message to be sent
+    :param thread_id: the ID of the thread used by manage function to manage the list of threads
+    :param err_msg: if it is transmitted, it contains an error message that needs to be sent
+    :param kwargs: arguments of the function func
+    :return: None
+    """
     if len(err_msg) > 0:
         try:
             websocket.send(err_msg)
         except websockets.exceptions.ConnectionClosedOK: pass
-        finally: return
-    response = "" # чтобы не возникало UnboundLocalError
+        finally:
+            return
     error = True
     try:
         response, error = json.dumps(func(**kwargs)), False
@@ -57,13 +70,27 @@ def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs): 
 
 
 def remove_thread(ws_id, thread_id):
+    """
+
+    a function for safely removing a thread from the list of threads for websocket with id = websocket.id
+
+    :param ws_id: websocket ID
+    :param thread_id: the ID of the thread used by manage function to manage the list of threads
+    :return:
+    """
     if ws_id in sockets:
         if thread_id in sockets[ws_id]:
             sockets[ws_id].remove(thread_id)
-            print("thread removed")
+            #print("thread removed")
 
 
 def thread_array_is_alive(threads):
+    """
+
+    :param threads: the list of threads that need to be checked
+    :return: False if all threads are completed and True if at least one of them is alive
+    :rtype: bool
+    """
     flag = False
     for thread in threads:
         flag |= thread.is_alive()
@@ -160,9 +187,14 @@ def manage(request, websocket):
     :return: None
     """
     try:
-        s_type, s_data = request['type'], request['data']
+        s_type = request['type']
     except KeyError:
         websocket_send(websocket, err_msg="RPM 0x01: "+Errors["RPM 0x01"])
+        return
+    try:
+        s_data = request['data']
+    except KeyError:
+        websocket_send(websocket, err_msg="RPM 0x02: " + Errors["RPM 0x02"])
         return
     thread_id = hex(abs(hash(str(request))))
     if thread_id in sockets[str(websocket.id)]:
@@ -180,6 +212,7 @@ def manage(request, websocket):
 
 def handle(websocket):
     """
+    A function that listens to the requests of the websocket
 
     :param websocket: current websocket client
     :return: None
