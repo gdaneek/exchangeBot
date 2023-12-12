@@ -63,7 +63,7 @@ class Cryptoex:
     class BadExchangeError(Exception): pass
     class BadTickerError(Exception): pass
     class InitError(Exception): pass
-    class BadRequestError(Exception): pass
+    class BadResponseError(Exception): pass
 
     def __init__(self):
         """
@@ -84,7 +84,7 @@ class Cryptoex:
 
         The function makes a request to the exchange and allocates from it the start and end times,
         and the cost of the ticker at each time multiple of the interval.
-        If the request fails, the BadRequestError will be thrown.
+        If the request fails, the BadResponseError will be thrown.
         The data for plotting the ticker is provided by the exchange Binance
 
         :param ticker: the ticker for which you need to build a graph
@@ -99,13 +99,12 @@ class Cryptoex:
         try:
             params = f"symbol={ticker}&interval={interval}&limit={limit}"
             response = requests.get(f'{self.exchanges[exchange]["kline_stream"]}?{params}').json()
+            from_t, to_t = int(response[0][0]) / 1000, int(response[-1][0]) / 1000
         except Exception:
-            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
-        from_t, to_t = int(response[0][0])/1000, int(response[-1][0])/1000
+            raise self.BadResponseError("Error: exchange response isn't JSON. Check your request")
         conv_interval = {"1d": 86400}
-        close_price = [x[4] for x in response]
         result = {'exchange': exchange, 'ticker': ticker, 'from': from_t, 'to': to_t,
-                  'interval': conv_interval[interval], 'close_price': close_price}
+                  'interval': conv_interval[interval], 'close_price': [x[4] for x in response]}
         return result
 
     def exchange_data(self, exchange):  # get all exchange tickers
@@ -113,7 +112,7 @@ class Cryptoex:
         Function to get the data of all tickers of a defined exchange
 
         :raise BadExchangeError: the exchange is not supported
-        :raise BadRequestError: the exchange's response is not correct or has an error code
+        :raise BadResponseError: the exchange's response is not correct or has an error code
         :param exchange: one of the supported exchanges
         :return: A list containing the name of the ticker, the cost and its change in 24 hours
         :rtype: list
@@ -123,9 +122,9 @@ class Cryptoex:
             raise self.BadExchangeError(f"Error: unsupported or incorrect exchange {exchange}")
         result = list()    # value to return
         try:
-            response = requests.get(self.exchanges[exchange]["exchange_stream"]).json()   
+            response = requests.get(self.exchanges[exchange]["exchange_stream"]).json()
         except Exception:
-            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
+            raise self.BadResponseError("Error: exchange response isn't JSON. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result', 'list'], "Binance": [], "KuCoin": ['data', 'ticker']}
         for i in range(len(result_key[exchange])):
             response = response[result_key[exchange][i]]    # extracting useful data from the exchange's response
@@ -151,7 +150,7 @@ class Cryptoex:
         Function to get the data of defined ticker of defined exchange
 
         :raise BadTickerError: The ticker must contain `-` as a separator
-        :raise BadRequestError: the exchange's response is not correct or has an error code
+        :raise BadResponseError: the exchange's response is not correct or has an error code
         :param ticker: the name of the ticker(e.g. BTC-USDT, ETH-USDT)
         :param exchange: one of the supported exchanges
         :return: A list containing the name of the exchange, ticker, the cost and its change in 24 hours
@@ -164,7 +163,7 @@ class Cryptoex:
             params = f"symbol={ticker}"
             response = requests.get(f"{self.exchanges[exchange]['ticker_stream']}?{params}").json()
         except Exception:
-            raise self.BadRequestError("Error: exchange response isn't JSON string. Check your request")
+            raise self.BadResponseError("Error: exchange response isn't JSON. Check your request")
         result_key = {"BitMart": ['data'], "Bybit": ['result'], "Binance": [], "KuCoin": ['data']}
         for i in range(len(result_key[exchange])):
             response = response[result_key[exchange][i]]  # extracting the data from the exchange's response
@@ -181,3 +180,7 @@ class Cryptoex:
                     result[default_dkey] = str(round(float(result[default_dkey]) * 100, 2))
                 result[default_dkey] += "%"
         return result
+
+
+# c = Cryptoex()
+# print(c.klines("BTCUSDT","1d","3"))

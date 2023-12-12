@@ -111,7 +111,8 @@ def send_exchange_data(exchange, websocket, thread_id, **kwargs):
     count, timeout, threads = kwargs.get("count"), kwargs.get("timeout"), set()
     while thread_id in sockets[str(websocket.id)]:
         if count == 0:
-            if not thread_array_is_alive(threads): remove_thread(str(websocket.id), thread_id)
+            if not thread_array_is_alive(threads):
+                remove_thread(str(websocket.id), thread_id)
             time.sleep(default["alive_threads_viewing_delay"])
             continue
         _args, _kwargs = [websocket, cryptoex.exchange_data, thread_id], {"exchange": exchange}
@@ -138,7 +139,8 @@ def send_ticker_data(websocket, thread_id, **kwargs):
     # когда count == 0, переходим в режим ожидания завершения всех потоков
     while thread_id in sockets[str(websocket.id)]: # если count < 0 - бесконечный цикл
         if count == 0:         #  если count == 0 - будем ждать, когда завершатся все запушенные потоки
-            if not thread_array_is_alive(threads): remove_thread(str(websocket.id), thread_id)
+            if not thread_array_is_alive(threads):
+                remove_thread(str(websocket.id), thread_id)
             time.sleep(default["alive_threads_viewing_delay"]) # ждать, пока все потоки закончатся, после чего завершить работу
             continue
         for exchange in exchanges:
@@ -155,8 +157,6 @@ def send_klines(websocket, thread_id, **kwargs):
     """
     A function that sends data for plotting at a specified interval to a websocket client
 
-    :param exchange: the exchange from which data should be received
-    :param ticker: ticker to send information about
     :param websocket: websocket client to which the response should be sent
     :param thread_id: the ID of the thread used by manage function to manage the list of threads
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
