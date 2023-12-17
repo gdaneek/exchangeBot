@@ -16,7 +16,8 @@ default = {
         "count": 1,
         "interval": "1d",
         "limit": 365,
-        "alive_threads_viewing_delay": .2
+        "alive_threads_viewing_delay": .2,
+        "extype": "crypto"      # тип бирж, на которых нужно искать. по умолчанию crypto maybe stock
     }
 
 #   the list of errors returned by the server to an incorrect request from the websocket client
@@ -31,6 +32,7 @@ Errors = {
         "WPV 0x03": "unsupported or incorrect exchange",
         "WPV 0x04": "parameter 'type' must be str",
         "WPV 0x05": "parameters 'count' and 'timeout' must contain only numbers 0-9",
+        "WPV 0x06": "parameter 'type' has an unknown value",
         "UnErr": "Unknown error"
     }
 
@@ -131,8 +133,8 @@ def send_exchange_data(websocket, thread_id, **kwargs) -> None:
             continue
         _args, _kwargs = [websocket, cryptoex.exchange_data, thread_id], {"exchange": exchange}
         thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)   # тут не надо исключения
-        thread.start()
         threads.add(thread)
+        thread.start()
         count -= 1
         time.sleep(timeout)
 
@@ -208,6 +210,12 @@ def manage(request, websocket):
         err_msg = (make_error_msg("RPM 0x01")) if request.get("type") is None else make_error_msg("RPM 0x02")
         websocket_send(websocket, err_msg=err_msg)
         return
+    try:
+        if s_type not in stream_functions:
+            websocket_send(websocket, err_msg=make_error_msg("WPV 0x06"))
+            return
+    except TypeError:
+        websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
 
     thread_id = hex(abs(hash(str(request))))
     if thread_id in sockets[str(websocket.id)]:
@@ -216,9 +224,10 @@ def manage(request, websocket):
     sockets[str(websocket.id)].add(thread_id)
     try:
         count, timeout = int(request.get('count', default["count"])), int(request.get('timeout', default["timeout"]))
-    except ValueError:
+    except (ValueError, TypeError):
         websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
-        count, timeout = default["count"], default["timeout"]
+        remove_thread(str(websocket.id), thread_id)
+        return
 
     kwargs = {
                   "thread_id": thread_id,
@@ -226,6 +235,7 @@ def manage(request, websocket):
                   "count": count,
                   "timeout": timeout}
     kwargs.update(s_data)
+
     try:
         threading.Thread(target=stream_functions.get(s_type), kwargs=kwargs).start()
     except TypeError:
