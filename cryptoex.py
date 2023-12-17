@@ -147,7 +147,7 @@ class Cryptoex:
         :return: A list containing the name of the exchange, ticker, the cost and its change in 24 hours
         :rtype: list
         """
-        if "-" not in ticker:
+        if (type(ticker) is not str) or ("-" not in ticker):
             raise self.BadTickerError("ticker must contain `-` as a separator")
         ticker = ticker.replace('-', self.exchanges[exchange]['ticker_sep'])
         try:
@@ -174,4 +174,4 @@ class Cryptoex:
 
 
 # c = Cryptoex()
-# print(c.klines("BTCUSDT","1d","3"))
+# print(c.ticker_data("BTC-USDT", "BitMart"))

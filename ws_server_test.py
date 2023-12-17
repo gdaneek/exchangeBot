@@ -5,12 +5,6 @@ import ws_server as s
 import json
 from cryptoex import Cryptoex
 test_request = {"type": "ticker_stream", "data": {"ticker": "BTC-USDT", "exchange": "Bybit"}, "timeout": 10, "count": 5}
-send_ticker_data_kwargs = {'count': 5, 'timeout': 0, 'ticker': 'BTC-USDT',
-                           'exchange': 'Bybit', 'extype': s.cryptoex}
-
-send_exchange_data_kwargs = {'count': 5, 'timeout': 0, 'exchange': 'Bybit', 'extype': s.cryptoex}
-
-send_klines_kwargs = {'count': 1, 'timeout': 0, 'ticker': 'BTC-USDT', 'extype': s.cryptoex}
 
 
 class SocketConnection:
@@ -121,7 +115,7 @@ def test_manage_required_parameter_type_missed():
     t.pop("type")
     s.websocket_send = Mock()
     s.manage(t, websocket)
-    s.websocket_send.assert_called_with(websocket,err_msg=s.make_error_msg("RPM 0x01"))
+    s.websocket_send.assert_called_with(websocket, err_msg=s.make_error_msg("RPM 0x01"))
 
 
 def test_manage_required_parameter_data_missed():
@@ -149,7 +143,17 @@ def test_manage_wpv0x05_bad_count_or_timeout_value_type():
     s.websocket_send = Mock()
     s.manage(t, websocket)
     s.websocket_send.assert_called_with(websocket, err_msg=s.make_error_msg("WPV 0x05"))
+
 # ------------------------  send_ticker_data, send_exchange_data and send_klines testing ------------------------ #
+
+
+send_ticker_data_kwargs = {'count': 5, 'timeout': 0, 'ticker': 'BTC-USDT',
+                           'exchange': 'Bybit', 'extype': s.cryptoex}
+
+send_exchange_data_kwargs = {'count': 5, 'timeout': 0, 'exchange': 'Bybit', 'extype': s.cryptoex}
+
+send_klines_kwargs = {'count': 1, 'timeout': 0, 'ticker': 'BTC-USDT', 'extype': s.cryptoex}
+
 
 def test_send_ticker_data_successful():
     websocket = SocketConnection()
@@ -200,6 +204,7 @@ def test_send_klines_successful():
 
     threading.Thread.assert_called_with(target=s.websocket_send, args=_args, kwargs=_kwargs)
     assert threading.Thread.call_count == send_klines_kwargs['count']
+
 # ------------------------  handle testing ------------------------ #
 
 
@@ -260,5 +265,3 @@ def test_remove_thread_no_websocket_in_dict():
 def test_make_error_msg_successful():
     wrf0x01 = "WRF 0x01: request is not JSON string"
     assert wrf0x01 == s.make_error_msg("WRF 0x01")
-
-

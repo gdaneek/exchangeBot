@@ -1,7 +1,6 @@
 import json
 import threading
 import websockets
-#import websockets.sync.client
 
 from cryptoex import Cryptoex
 from moex_exchange import MoexExchange
@@ -9,8 +8,7 @@ import time
 
 cryptoex = Cryptoex()
 moex = MoexExchange()
-if __name__ == "__main__":
-    from websockets.sync.server import serve  # не может импортировать
+
 
 #   default settings that will be used for optional parameters if the user does not specify their value in his request
 default = {
@@ -238,7 +236,6 @@ def manage(request, websocket):
         count, timeout = int(request.get('count', default["count"])), int(request.get('timeout', default["timeout"]))
     except (ValueError, TypeError):
         websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
-        remove_thread(str(websocket.id), thread_id)
         return
 
     kwargs = {
@@ -248,10 +245,7 @@ def manage(request, websocket):
                   "timeout": timeout}
     kwargs.update(s_data)
 
-    try:
-        threading.Thread(target=stream_functions.get(s_type), kwargs=kwargs).start()
-    except TypeError:
-        websocket_send(websocket, thread_id=thread_id, err_msg= make_error_msg("WPV 0x04"))
+    threading.Thread(target=stream_functions.get(s_type), kwargs=kwargs).start()
 
 
 def handle(websocket):
@@ -278,6 +272,7 @@ def handle(websocket):
 
 
 if __name__ == "__main__":
+    from websockets.sync.server import serve  # не может импортировать
     with serve(handle, "localhost", 8765) as ws_server:
         print("server started")
         ws_server.serve_forever()
