@@ -6,8 +6,19 @@ from cryptoex import Cryptoex
 from moex_exchange import MoexExchange
 import time
 
+"""
+ WebSocket server code file
+"""
+
 cryptoex = Cryptoex()
+"""
+an instance of a class for working with crypto exchanges
+"""
+
 moex = MoexExchange()
+"""
+an instance of a class for working with stock exchanges
+"""
 
 
 #   default settings that will be used for optional parameters if the user does not specify their value in his request
@@ -17,8 +28,11 @@ default = {
         "interval": "1d",
         "limit": 365,
         "alive_threads_viewing_delay": .2,
-        "extype": "crypto"      # тип бирж, на которых нужно искать. по умолчанию crypto maybe stock
+        "extype": "crypto"
     }
+"""
+    default server settings
+"""
 
 #   the list of errors returned by the server to an incorrect request from the websocket client
 Errors = {
@@ -35,17 +49,32 @@ Errors = {
         "WPV 0x06": "parameter 'type' or 'extype' has an unknown value",
         "UnErr": "Unknown error"
     }
+"""
+errors returned by the server and their description
+"""
 
 #   there are a set of web clients at current moment
 extypes = {
     "crypto": cryptoex,
     "stock": moex
 }
+"""
+types of exchanges. Total 2: Crypto and Stock
+"""
 
 sockets = dict()
+"""
+the dictionary of websocket clients, which includes many streams of each of them
+"""
 
 
 def make_error_msg(key):
+    """
+     function that creates the error message
+    :param key: the key to use to get the error message text
+    :return: Error message
+    :rtype: str
+    """
     return f"{key}: {Errors[key]}"
 
 
@@ -66,7 +95,8 @@ def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
     if len(response) > 0:
         try:
             websocket.send(response)
-        except websockets.exceptions.ConnectionClosedOK: pass
+        except websockets.exceptions.ConnectionClosedOK:
+            pass
         finally:
             remove_thread(str(websocket.id), thread_id)
             return
@@ -82,10 +112,11 @@ def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
         response = make_error_msg("WPV 0x03")
     except Exception:
         response = make_error_msg("UnErr")
-    if thread_id in sockets[str(websocket.id)]:      # если поступит запрос на отмену потока
+    if thread_id in sockets[str(websocket.id)]:
         try:
             websocket.send(response)
-        except websockets.exceptions.ConnectionClosedOK: pass
+        except websockets.exceptions.ConnectionClosedOK:
+            pass
         finally:
             if error:
                 remove_thread(str(websocket.id), thread_id)
@@ -98,7 +129,8 @@ def remove_thread(ws_id, thread_id):
 
     :param ws_id: websocket ID
     :param thread_id: the ID of the thread used by manage function to manage the list of threads
-    :return:
+    :return: -
+    :rtype: None
     """
     if ws_id in sockets:
         if thread_id in sockets[ws_id]:
@@ -107,6 +139,7 @@ def remove_thread(ws_id, thread_id):
 
 def thread_array_is_alive(threads):
     """
+    checks if there is at least one running thread in the list
 
     :param threads: the list of threads that need to be checked
     :return: False if all threads are completed and True if at least one of them is alive
@@ -138,7 +171,7 @@ def send_exchange_data(websocket, thread_id, **kwargs) -> None:
             time.sleep(default["alive_threads_viewing_delay"])
             continue
         _args, _kwargs = [websocket, extype.exchange_data, thread_id], {"exchange": exchange}
-        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)   # тут не надо исключения
+        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
         threads.add(thread)
         thread.start()
         count -= 1
@@ -159,15 +192,14 @@ def send_ticker_data(websocket, thread_id, **kwargs) -> None:
     exchange = kwargs.get("exchange")
     ticker = kwargs.get("ticker")
     extype = kwargs.get("extype")
-    # когда count == 0, переходим в режим ожидания завершения всех потоков
-    while thread_id in sockets[str(websocket.id)]:  #print("thread removed") # если count < 0 - бесконечный цикл
-        if count == 0:         #  если count == 0 - будем ждать, когда завершатся все запушенные потоки
+    while thread_id in sockets[str(websocket.id)]:
+        if count == 0:
             if not thread_array_is_alive(threads):
                 remove_thread(str(websocket.id), thread_id)
-            time.sleep(default["alive_threads_viewing_delay"]) # ждать, пока все потоки закончатся, после чего завершить работу
+            time.sleep(default["alive_threads_viewing_delay"])
             continue
         _args, _kwargs = [websocket, extype.ticker_data, thread_id], {"ticker": ticker, "exchange": exchange}
-        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
+        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
         thread.start()
         threads.add(thread)
         count -= 1
@@ -188,7 +220,7 @@ def send_klines(websocket, thread_id, **kwargs) -> None:
     ticker, exchange = kwargs.get("ticker"), kwargs.get("exchange")
     _args = [websocket, extype.klines, thread_id]
     _kwargs = {"ticker": ticker, "interval": interval, "limit": limit}
-    thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
+    thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
     thread.start()
     while thread_array_is_alive([thread]):
         time.sleep(default["alive_threads_viewing_delay"])
@@ -199,7 +231,9 @@ stream_functions = {
             "exchange_stream": send_exchange_data,
             "klines_stream": send_klines,
             "ticker_stream": send_ticker_data}
-            # moex_stream
+"""
+a list that matches the type of request and the function that processes it
+"""
 
 
 def manage(request, websocket):
@@ -272,7 +306,7 @@ def handle(websocket):
 
 
 if __name__ == "__main__":
-    from websockets.sync.server import serve  # не может импортировать
+    from websockets.sync.server import serve
     with serve(handle, "localhost", 8765) as ws_server:
         print("server started")
         ws_server.serve_forever()

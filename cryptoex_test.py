@@ -72,7 +72,6 @@ def test_ticker_data_bad_ticker_type():
         cryptoex.ticker_data(ticker, "Binance")
 
 
-
 def test_ticker_data_bad_response():
     with pytest.raises(cryptoex.BadResponseError):
         ticker = "btc-usdt"
@@ -140,3 +139,11 @@ def test_klines_successful():
     requests.get.return_value = requests.models.Response()
     requests.models.Response.json.return_value = data_IO["test_klines_successful_input"]
     assert cryptoex.klines("BTCUSDT", "1d", "3") == data_IO["test_klines_successful_output"]
+
+# ------------------------  init testing ------------------------ #
+
+
+def test_init_error():
+    with pytest.raises(cryptoex.InitError):
+        Cryptoex.default_dkey.append('')
+        t = Cryptoex()

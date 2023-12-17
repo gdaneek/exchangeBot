@@ -4,13 +4,6 @@ import requests
 class Cryptoex:
     """
     A class for working with cryptoexchange data
-
-
-    :param exchanges: a dict of URLs of supported exchanges for each type of processing function
-    :param default_dkey: default keys with which the processed exchange's response is returned
-    :param exchange_dkey: the keys of the exchange, with which the required data is returned
-
-
     """
     exchanges = {
         'Binance': {
@@ -31,7 +24,15 @@ class Cryptoex:
             "exchange_stream": "https://api-cloud.bitmart.com/spot/quotation/v3/tickers",
             "ticker_sep": "_"}
     }
+    """
+        a dict of URLs of supported exchanges for each type of processing function
+    """
+
     default_dkey = ["Price", "Fluctuation"]
+    """
+         default keys with which the processed exchange's response is returned
+    """
+
     exchange_dkey = {
         "Binance":
             {
@@ -50,18 +51,41 @@ class Cryptoex:
                 "ticker_stream": ["last", "fluctuation"],
                 "exchange_stream": [1, 7]}
     }
+    """
+        keys of the exchange, with which the required data is returned
+    """
 
-    class BadExchangeError(Exception): pass
-    class BadTickerError(Exception): pass
-    class InitError(Exception): pass
-    class BadResponseError(Exception): pass
+    class BadExchangeError(Exception):
+        """
+            the exchange is not in the list of supported exchanges
+        """
+        pass
+
+    class BadTickerError(Exception):
+        """
+            ticker does not contain "-" as a separator
+        """
+        pass
+
+    class InitError(Exception):
+        """
+            it is impossible to establish a correspondence between the exchange keys and the server keys
+        """
+        pass
+
+    class BadResponseError(Exception):
+        """
+            the exchange's response is not a json string
+        """
+        pass
 
     def __init__(self):
         """
             Function checks whether the default key matches all the keys of the exchange.
 
             :raise InitError: If it is impossible to establish a match, the InitError will be thrown
-            :rtype: none
+            :return: -
+            :rtype: None
         """
         for exchange in self.exchange_dkey:
             for dkey in self.exchange_dkey[exchange]:
