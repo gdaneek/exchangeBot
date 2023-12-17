@@ -4,9 +4,11 @@ import websockets
 #import websockets.sync.client
 
 from cryptoex import Cryptoex
+from moex_exchange import MoexExchange
 import time
 
 cryptoex = Cryptoex()
+moex = MoexExchange()
 if __name__ == "__main__":
     from websockets.sync.server import serve  # не может импортировать
 
@@ -30,15 +32,20 @@ Errors = {
         "WPV 0x01": "some parameters have an unknown value or an incorrect value's type",  # TypeError
         "WPV 0x02": "ticker must contain `-` as a separator",
         "WPV 0x03": "unsupported or incorrect exchange",
-        "WPV 0x04": "parameter 'type' must be str",
+        "WPV 0x04": "parameters 'type' and 'extype' must be str",
         "WPV 0x05": "parameters 'count' and 'timeout' must contain only numbers 0-9",
-        "WPV 0x06": "parameter 'type' has an unknown value",
+        "WPV 0x06": "parameter 'type' or 'extype' has an unknown value",
         "UnErr": "Unknown error"
     }
 
 #   there are a set of web clients at current moment
+extypes = {
+    "crypto": cryptoex,
+    "stock": moex
+}
 
 sockets = dict()
+
 
 def make_error_msg(key):
     return f"{key}: {Errors[key]}"
@@ -125,13 +132,14 @@ def send_exchange_data(websocket, thread_id, **kwargs) -> None:
     """
     count, timeout, threads = kwargs.get("count"), kwargs.get("timeout"), set()
     exchange = kwargs.get("exchange")
+    extype = kwargs.get("extype")
     while thread_id in sockets[str(websocket.id)]:
         if count == 0:
             if not thread_array_is_alive(threads):
                 remove_thread(str(websocket.id), thread_id)
             time.sleep(default["alive_threads_viewing_delay"])
             continue
-        _args, _kwargs = [websocket, cryptoex.exchange_data, thread_id], {"exchange": exchange}
+        _args, _kwargs = [websocket, extype.exchange_data, thread_id], {"exchange": exchange}
         thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)   # тут не надо исключения
         threads.add(thread)
         thread.start()
@@ -150,8 +158,9 @@ def send_ticker_data(websocket, thread_id, **kwargs) -> None:
     :return: None
     """
     count, timeout, threads = kwargs.get("count"), kwargs.get("timeout"), set()
-    exchanges = cryptoex.exchanges.keys() if kwargs.get("exchange") is None else [kwargs.get("exchange")]
+    exchange = kwargs.get("exchange")
     ticker = kwargs.get("ticker")
+    extype = kwargs.get("extype")
     # когда count == 0, переходим в режим ожидания завершения всех потоков
     while thread_id in sockets[str(websocket.id)]:  #print("thread removed") # если count < 0 - бесконечный цикл
         if count == 0:         #  если count == 0 - будем ждать, когда завершатся все запушенные потоки
@@ -159,11 +168,10 @@ def send_ticker_data(websocket, thread_id, **kwargs) -> None:
                 remove_thread(str(websocket.id), thread_id)
             time.sleep(default["alive_threads_viewing_delay"]) # ждать, пока все потоки закончатся, после чего завершить работу
             continue
-        for exchange in exchanges:
-            _args, _kwargs = [websocket, cryptoex.ticker_data, thread_id], {"ticker": ticker, "exchange": exchange}
-            thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
-            thread.start()
-            threads.add(thread)
+        _args, _kwargs = [websocket, extype.ticker_data, thread_id], {"ticker": ticker, "exchange": exchange}
+        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
+        thread.start()
+        threads.add(thread)
         count -= 1
         time.sleep(timeout)
 
@@ -177,10 +185,11 @@ def send_klines(websocket, thread_id, **kwargs) -> None:
     :param kwargs: some optional arguments that can be set by default (e.g. timeout, ws_id)
     :return: None
     """
+    extype = kwargs.get("extype")
     interval, limit = kwargs.get("interval", default["interval"]), kwargs.get("limit", default["limit"])
     ticker, exchange = kwargs.get("ticker"), kwargs.get("exchange")
-    _args = [websocket, cryptoex.klines, thread_id]
-    _kwargs = {"ticker": ticker, "exchange": exchange, "interval": interval, "limit": limit}
+    _args = [websocket, extype.klines, thread_id]
+    _kwargs = {"ticker": ticker, "interval": interval, "limit": limit}
     thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)  # тут не надо исключения
     thread.start()
     while thread_array_is_alive([thread]):
@@ -211,11 +220,14 @@ def manage(request, websocket):
         websocket_send(websocket, err_msg=err_msg)
         return
     try:
-        if s_type not in stream_functions:
+        extype = s_data.get("extype", default["extype"])
+        if (s_type not in stream_functions) or (extype not in extypes):
             websocket_send(websocket, err_msg=make_error_msg("WPV 0x06"))
             return
+        s_data['extype'] = extypes[extype]
     except TypeError:
-        websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
+        websocket_send(websocket, err_msg=make_error_msg("WPV 0x04"))
+        return
 
     thread_id = hex(abs(hash(str(request))))
     if thread_id in sockets[str(websocket.id)]:
@@ -265,16 +277,7 @@ def handle(websocket):
         manage(request, websocket)
 
 
-def main():
-    """
-    The main function that starts the synchronous server on port 8765
-
-    :return: None
-    """
+if __name__ == "__main__":
     with serve(handle, "localhost", 8765) as ws_server:
         print("server started")
         ws_server.serve_forever()
-
-
-if __name__ == "__main__":
-    main()

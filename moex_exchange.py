@@ -1,5 +1,4 @@
 import requests
-import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 
@@ -26,14 +25,13 @@ class MoexExchange:
         :rtype: dict
         :raise: requests.exceptions.RequestException: In case of incorrect request or empty answer.
         """
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            raise e
 
-    def get_ticker_info(self, ticker):
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+
+
+    def ticker_data(self, ticker):
         """
         Function, that returns information about ticker: P/E, Current price, MarketCap
 
@@ -48,19 +46,18 @@ class MoexExchange:
         """
         url = f"{self.base_url}/iss/engines/stock/markets/shares/boards/TQBR/securities/{ticker.upper()}.json"
 
-        try:
-            data = self._make_request(url)
-            if "marketdata" in data:
-                pe_ratio = data["marketdata"]["pe_ratio"]
-                current_price = data["marketdata"]["capitalization"]
-                market_cap = data["marketdata"]["market_cap"]
-                return pe_ratio, current_price, market_cap
-            else:
-                raise ValueError("Ticker not found.")
-        except requests.exceptions.RequestException as e:
-            raise e
 
-    def plot_gen(self, ticker):
+        data = self.make_request(url)
+        if "marketdata" in data:
+            pe_ratio = data["marketdata"]["pe_ratio"]
+            current_price = data["marketdata"]["capitalization"]
+            market_cap = data["marketdata"]["market_cap"]
+            return pe_ratio, current_price, market_cap
+        else:
+            raise ValueError("Ticker not found.")
+
+    def exchange_data(self): pass
+    def klines(self, ticker):
         """
         Сохраняет график изменения цены тикера за последний год на устройство.
 
@@ -71,24 +68,15 @@ class MoexExchange:
         end_date = datetime.now()
         start_date = end_date - timedelta(days=365)
 
-        try:
-            data = self._make_request(url)
-            if "history" in data:
-                prices = []
-                dates = []
-                for item in data["history"]["data"]:
-                    date = datetime.strptime(item[1], "%Y-%m-%d")
-                    if start_date <= date <= end_date:
-                        prices.append(item[7])
-                        dates.append(date)
-                plt.figure(figsize=(12, 6))
-                plt.plot(dates, prices)
-                plt.xlabel("Date")
-                plt.ylabel("Price")
-                plt.title(f"Price History for {ticker.upper()}")
-                plt.grid(True)
-                plt.savefig(f"{ticker.upper()}_price_history.png")
-            else:
-                raise ValueError("Ticker not found.")
-        except requests.exceptions.RequestException as e:
-            raise e
+        data = self.make_request(url)
+        if "history" in data:
+            prices = []
+            dates = []
+            for item in data["history"]["data"]:
+                date = datetime.strptime(item[1], "%Y-%m-%d")
+                if start_date <= date <= end_date:
+                    prices.append(item[7])
+                    dates.append(date)
+
+        else:
+            raise ValueError("Ticker not found.")
