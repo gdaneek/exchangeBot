@@ -5,20 +5,11 @@ class Cryptoex:
     """
     A class for working with cryptoexchange data
 
-    Attributes:
-    ^^^^^^^^^^^
 
-    :exchanges: a dict of URLs of supported exchanges for each type of processing function
-    :default_dkey: default keys with which the processed exchange's response is returned
-    :exchange_dkey: the keys of the exchange, with which the required data is returned
+    :param exchanges: a dict of URLs of supported exchanges for each type of processing function
+    :param default_dkey: default keys with which the processed exchange's response is returned
+    :param exchange_dkey: the keys of the exchange, with which the required data is returned
 
-    :exception BadExchangeError: unsupported or incorrect exchange
-    :exception BadTickerError: ticker not contain `-` as a separator
-    :exception InitError: no match was found between the default key and the exchange key
-    :exception The exchange's response does not match the format for this request
-
-    Methods:
-    ^^^^^^^^
 
     """
     exchanges = {
@@ -177,7 +168,7 @@ class Cryptoex:
             result[default_dkey] = response[exchange_dkey]
             if default_dkey == "Fluctuation":     # convert the price change into a percentage
                 if exchange != "Binance":
-                    result[default_dkey] = str(round(float(result[default_dkey]) * 100, 2))
+                    result[default_dkey] = str(round(float(result.get(default_dkey)) * 100, 2))
                 result[default_dkey] += "%"
         return result
 
