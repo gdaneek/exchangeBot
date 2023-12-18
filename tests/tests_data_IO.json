@@ -1,0 +1,940 @@
+{
+  "test_exchange_data_successful_binance_input": [
+    {
+      "symbol": "BNBBTC",
+      "priceChange": "-94.99999800",
+      "priceChangePercent": "-95.960",
+      "weightedAvgPrice": "0.29628482",
+      "prevClosePrice": "0.10002000",
+      "lastPrice": "4.00000200",
+      "lastQty": "200.00000000",
+      "bidPrice": "4.00000000",
+      "bidQty": "100.00000000",
+      "askPrice": "4.00000200",
+      "askQty": "100.00000000",
+      "openPrice": "99.00000000",
+      "highPrice": "100.00000000",
+      "lowPrice": "0.10000000",
+      "volume": "8913.30000000",
+      "quoteVolume": "15.30000000",
+      "openTime": 1499783499040,
+      "closeTime": 1499869899040,
+      "firstId": 28385,
+      "lastId": 28460,
+      "count": 76
+    },
+    {
+      "symbol": "BNBBTC",
+      "priceChange": "-94.99999800",
+      "priceChangePercent": "-95.960",
+      "weightedAvgPrice": "0.29628482",
+      "prevClosePrice": "0.10002000",
+      "lastPrice": "4.00000200",
+      "lastQty": "200.00000000",
+      "bidPrice": "4.00000000",
+      "bidQty": "100.00000000",
+      "askPrice": "4.00000200",
+      "askQty": "100.00000000",
+      "openPrice": "99.00000000",
+      "highPrice": "100.00000000",
+      "lowPrice": "0.10000000",
+      "volume": "8913.30000000",
+      "quoteVolume": "15.30000000",
+      "openTime": 1499783499040,
+      "closeTime": 1499869899040,
+      "firstId": 28385,
+      "lastId": 28460,
+      "count": 76
+    }
+  ],
+  "test_exchange_data_successful_binance_output": [
+    {
+      "Exchange": "Binance",
+      "Trade pair": "BNBBTC",
+      "Price": "4.00000200",
+      "Fluctuation": "-95.960%"
+    },
+    {
+      "Exchange": "Binance",
+      "Trade pair": "BNBBTC",
+      "Price": "4.00000200",
+      "Fluctuation": "-95.960%"
+    }
+  ],
+  "test_exchange_data_successful_bybit_input": {
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+      "list": [
+        {
+          "t": 1702150500000,
+          "s": "SDUSDT",
+          "bp": "",
+          "ap": "",
+          "lp": "1.3",
+          "o": "1.3",
+          "h": "1.3",
+          "l": "1.3",
+          "v": "0",
+          "qv": "0"
+        },
+        {
+          "t": 1702150500000,
+          "s": "RUNBTC",
+          "bp": "",
+          "ap": "",
+          "lp": "1.05",
+          "o": "1.05",
+          "h": "1.05",
+          "l": "1.05",
+          "v": "0",
+          "qv": "0"
+        }
+      ]
+    },
+    "retExtInfo": {},
+    "time": 1702150608557
+  },
+  "test_exchange_data_successful_bybit_output": [
+    {
+      "Exchange": "Bybit",
+      "Trade pair": "SDUSDT",
+      "Price": "1.3",
+      "Fluctuation": ""
+    },
+    {
+      "Exchange": "Bybit",
+      "Trade pair": "RUNBTC",
+      "Price": "1.05",
+      "Fluctuation": ""
+    }
+  ],
+  "test_exchange_data_successful_bitmart_input": {
+    "code": 1000,
+    "trace": "e810e2c075d94f67870797618470739a.57.17021525041778269",
+    "message": "success",
+    "data": [
+      [
+        "AFIN_USDT",
+        "0.002061",
+        "33566",
+        "67.660218",
+        "0.002020",
+        "0.002061",
+        "0.002001",
+        "0.02030",
+        "0.002019",
+        "4000",
+        "0.002061",
+        "4068",
+        "1702152496644"
+      ],
+      [
+        "BMX_ETH",
+        "0.00006862",
+        "3653452.4",
+        "251.41337419",
+        "0.00006875",
+        "0.00006928",
+        "0.00006809",
+        "-0.00189",
+        "0.00006861",
+        "22.3",
+        "0.00006948",
+        "722.3",
+        "1702152495385"
+      ]
+    ]
+  },
+  "test_exchange_data_successful_bitmart_output": [
+    {
+      "Exchange": "BitMart",
+      "Trade pair": "AFIN_USDT",
+      "Price": "0.002061",
+      "Fluctuation": "2.03%"
+    },
+    {
+      "Exchange": "BitMart",
+      "Trade pair": "BMX_ETH",
+      "Price": "0.00006862",
+      "Fluctuation": "-0.19%"
+    }
+  ],
+  "test_exchange_data_successful_kucoin_input": {
+    "code": "200000",
+    "data": {
+      "time": 1702153200016,
+      "ticker": [
+        {
+          "symbol": "NKN-USDT",
+          "symbolName": "NKN-USDT",
+          "buy": "0.121669",
+          "bestBidSize": "938.3474",
+          "sell": "0.122153",
+          "bestAskSize": "925.77",
+          "changeRate": "0.0109",
+          "changePrice": "0.001329",
+          "high": "0.125967",
+          "low": "0.119963",
+          "vol": "670208.7941",
+          "volValue": "82255.5612196461",
+          "last": "0.122255",
+          "averagePrice": "0.12266167",
+          "takerFeeRate": "0.001",
+          "makerFeeRate": "0.001",
+          "takerCoefficient": "1",
+          "makerCoefficient": "1"
+        },
+        {
+          "symbol": "LOOM-BTC",
+          "symbolName": "LOOM-BTC",
+          "buy": "0.00000281",
+          "bestBidSize": "1127.3966",
+          "sell": "0.000002818",
+          "bestAskSize": "8365.8368",
+          "changeRate": "0.001",
+          "changePrice": "0.000000003",
+          "high": "0.000002865",
+          "low": "0.000002781",
+          "vol": "144791.9543",
+          "volValue": "0.4101914225608",
+          "last": "0.000002814",
+          "averagePrice": "0.00000283",
+          "takerFeeRate": "0.001",
+          "makerFeeRate": "0.001",
+          "takerCoefficient": "1",
+          "makerCoefficient": "1"
+        }
+      ]
+    }
+  },
+  "test_exchange_data_successful_kucoin_output": [
+    {
+      "Exchange": "KuCoin",
+      "Trade pair": "NKN-USDT",
+      "Price": "0.122255",
+      "Fluctuation": "1.09%"
+    },
+    {
+      "Exchange": "KuCoin",
+      "Trade pair": "LOOM-BTC",
+      "Price": "0.000002814",
+      "Fluctuation": "0.1%"
+    }
+  ],
+  "test_klines_successful_input": [
+    [
+      1701907200000,
+      "43762.69000000",
+      "44047.33000000",
+      "42821.10000000",
+      "43273.14000000",
+      "47103.26845000",
+      1701993599999,
+      "2046945851.88364460",
+      1414759,
+      "22635.67672000",
+      "983629776.49386140",
+      "0"
+    ],
+    [
+      1701993600000,
+      "43273.15000000",
+      "44700.00000000",
+      "43081.10000000",
+      "44170.99000000",
+      "42900.37556000",
+      1702079999999,
+      "1875581755.44691050",
+      1311268,
+      "20818.67861000",
+      "910357262.89407300",
+      "0"
+    ],
+    [
+      1702080000000,
+      "44171.00000000",
+      "44358.02000000",
+      "43720.00000000",
+      "44069.55000000",
+      "22031.73680000",
+      1702166399999,
+      "969797781.52220610",
+      885459,
+      "10481.91791000",
+      "461398710.44524170",
+      "0"
+    ]
+  ],
+  "test_klines_successful_output": {
+    "exchange": "Binance",
+    "ticker": "BTCUSDT",
+    "from": 1701907200.0,
+    "to": 1702080000.0,
+    "interval": 86400,
+    "close_price": [
+      "43273.14000000",
+      "44170.99000000",
+      "44069.55000000"
+    ]
+  },
+  "test_ticker_data_successful_binance_input": {
+    "symbol": "BTCUSDT",
+    "priceChange": "-313.40000000",
+    "priceChangePercent": "-0.738",
+    "weightedAvgPrice": "42039.74253536",
+    "prevClosePrice": "42463.09000000",
+    "lastPrice": "42149.69000000",
+    "lastQty": "0.11906000",
+    "bidPrice": "42149.68000000",
+    "bidQty": "5.76375000",
+    "askPrice": "42149.69000000",
+    "askQty": "1.79864000",
+    "openPrice": "42463.09000000",
+    "highPrice": "42520.01000000",
+    "lowPrice": "41510.00000000",
+    "volume": "27124.67229000",
+    "quoteVolume": "1140314239.42765580",
+    "openTime": 1702752361517,
+    "closeTime": 1702838761517,
+    "firstId": 3324112120,
+    "lastId": 3325383123,
+    "count": 1271004
+  },
+  "test_ticker_data_successful_binance_output": {
+    "Exchange": "Binance",
+    "Trade pair": "BTCUSDT",
+    "Price": "42149.69000000",
+    "Fluctuation": "-0.738%"
+  },
+  "test_ticker_data_successful_bybit_input": {
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+      "t": 1702838986572,
+      "s": "BTCUSDT",
+      "bp": "42171.48",
+      "ap": "42171.49",
+      "lp": "42171.49",
+      "o": "42462.49",
+      "h": "42518.41",
+      "l": "41544.05",
+      "v": "6437.987646",
+      "qv": "270472097.00813217"
+    },
+    "retExtInfo": {},
+    "time": 1702838990692
+  },
+  "test_ticker_data_successful_bybit_output": {
+    "Exchange": "Bybit",
+    "Trade pair": "BTCUSDT",
+    "Price": "42171.49",
+    "Fluctuation": ""
+  },
+  "test_ticker_data_successful_kucoin_input": {
+    "code": "200000",
+    "data": {
+      "time": 1702839102156,
+      "symbol": "BTC-USDT",
+      "buy": "42152.3",
+      "sell": "42152.4",
+      "changeRate": "-0.0074",
+      "changePrice": "-316.9",
+      "high": "42516.8",
+      "low": "41524.1",
+      "vol": "1989.58449675",
+      "volValue": "83621277.319865225",
+      "last": "42152.5",
+      "averagePrice": "42064.96941199",
+      "takerFeeRate": "0.001",
+      "makerFeeRate": "0.001",
+      "takerCoefficient": "1",
+      "makerCoefficient": "1"
+    }
+  },
+  "test_ticker_data_successful_kucoin_output": {
+    "Exchange": "KuCoin",
+    "Trade pair": "BTC-USDT",
+    "Price": "42152.5",
+    "Fluctuation": "-0.74%"
+  },
+  "test_ticker_data_successful_bitmart_input": {
+    "code": 1000,
+    "trace": "d3fd8bc0d229402c87d780a443088d41.76.17028395629377201",
+    "message": "success",
+    "data": {
+      "symbol": "BTC_USDT",
+      "last": "42171.94",
+      "v_24h": "14236.54944",
+      "qv_24h": "597587498.45",
+      "open_24h": "42466.25",
+      "high_24h": "42520.01",
+      "low_24h": "41515.00",
+      "fluctuation": "-0.00693",
+      "bid_px": "42173.05",
+      "bid_sz": "0.1613",
+      "ask_px": "42173.27",
+      "ask_sz": "0.00047",
+      "ts": "1702839562844"
+    }
+  },
+  "test_ticker_data_successful_bitmart_output": {
+    "Exchange": "BitMart",
+    "Trade pair": "BTC_USDT",
+    "Price": "42171.94",
+    "Fluctuation": "-0.69%"
+  },
+  "moex_test_ticker_data_successful_input": {
+    "securities": {
+      "metadata": {
+        "SECID": {
+          "type": "string",
+          "bytes": 36,
+          "max_size": 0
+        },
+        "BOARDID": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "SHORTNAME": {
+          "type": "string",
+          "bytes": 30,
+          "max_size": 0
+        },
+        "PREVPRICE": {
+          "type": "double"
+        },
+        "LOTSIZE": {
+          "type": "int32"
+        },
+        "FACEVALUE": {
+          "type": "double"
+        },
+        "STATUS": {
+          "type": "string",
+          "bytes": 3,
+          "max_size": 0
+        },
+        "BOARDNAME": {
+          "type": "string",
+          "bytes": 381,
+          "max_size": 0
+        },
+        "DECIMALS": {
+          "type": "int32"
+        },
+        "SECNAME": {
+          "type": "string",
+          "bytes": 90,
+          "max_size": 0
+        },
+        "REMARKS": {
+          "type": "string",
+          "bytes": 24,
+          "max_size": 0
+        },
+        "MARKETCODE": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "INSTRID": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "SECTORID": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "MINSTEP": {
+          "type": "double"
+        },
+        "PREVWAPRICE": {
+          "type": "double"
+        },
+        "FACEUNIT": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "PREVDATE": {
+          "type": "date",
+          "bytes": 10,
+          "max_size": 0
+        },
+        "ISSUESIZE": {
+          "type": "int64"
+        },
+        "ISIN": {
+          "type": "string",
+          "bytes": 36,
+          "max_size": 0
+        },
+        "LATNAME": {
+          "type": "string",
+          "bytes": 90,
+          "max_size": 0
+        },
+        "REGNUMBER": {
+          "type": "string",
+          "bytes": 90,
+          "max_size": 0
+        },
+        "PREVLEGALCLOSEPRICE": {
+          "type": "double"
+        },
+        "CURRENCYID": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "SECTYPE": {
+          "type": "string",
+          "bytes": 3,
+          "max_size": 0
+        },
+        "LISTLEVEL": {
+          "type": "int32"
+        },
+        "SETTLEDATE": {
+          "type": "date",
+          "bytes": 10,
+          "max_size": 0
+        }
+      },
+      "columns": [
+        "SECID",
+        "BOARDID",
+        "SHORTNAME",
+        "PREVPRICE",
+        "LOTSIZE",
+        "FACEVALUE",
+        "STATUS",
+        "BOARDNAME",
+        "DECIMALS",
+        "SECNAME",
+        "REMARKS",
+        "MARKETCODE",
+        "INSTRID",
+        "SECTORID",
+        "MINSTEP",
+        "PREVWAPRICE",
+        "FACEUNIT",
+        "PREVDATE",
+        "ISSUESIZE",
+        "ISIN",
+        "LATNAME",
+        "REGNUMBER",
+        "PREVLEGALCLOSEPRICE",
+        "CURRENCYID",
+        "SECTYPE",
+        "LISTLEVEL",
+        "SETTLEDATE"
+      ],
+      "data": [
+        [
+          "SBER",
+          "TQBR",
+          "Сбербанк",
+          256.64,
+          10,
+          3,
+          "A",
+          "Т+: Акции и ДР - безадрес.",
+          2,
+          "Сбербанк России ПАО ао",
+          "None",
+          "FNDT",
+          "EQIN",
+          "None",
+          0.01,
+          259.82,
+          "SUR",
+          "2023-12-14",
+          21586948000,
+          "RU0009029540",
+          "Sberbank",
+          "10301481B",
+          258.18,
+          "SUR",
+          "1",
+          1,
+          "2023-12-18"
+        ]
+      ]
+    },
+    "marketdata": {
+      "metadata": {
+        "SECID": {
+          "type": "string",
+          "bytes": 36,
+          "max_size": 0
+        },
+        "BOARDID": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "BID": {
+          "type": "double"
+        },
+        "BIDDEPTH": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "OFFER": {
+          "type": "double"
+        },
+        "OFFERDEPTH": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "SPREAD": {
+          "type": "double"
+        },
+        "BIDDEPTHT": {
+          "type": "int32"
+        },
+        "OFFERDEPTHT": {
+          "type": "int32"
+        },
+        "OPEN": {
+          "type": "double"
+        },
+        "LOW": {
+          "type": "double"
+        },
+        "HIGH": {
+          "type": "double"
+        },
+        "LAST": {
+          "type": "double"
+        },
+        "LASTCHANGE": {
+          "type": "double"
+        },
+        "LASTCHANGEPRCNT": {
+          "type": "double"
+        },
+        "QTY": {
+          "type": "int32"
+        },
+        "VALUE": {
+          "type": "double"
+        },
+        "VALUE_USD": {
+          "type": "double"
+        },
+        "WAPRICE": {
+          "type": "double"
+        },
+        "LASTCNGTOLASTWAPRICE": {
+          "type": "double"
+        },
+        "WAPTOPREVWAPRICEPRCNT": {
+          "type": "double"
+        },
+        "WAPTOPREVWAPRICE": {
+          "type": "double"
+        },
+        "CLOSEPRICE": {
+          "type": "double"
+        },
+        "MARKETPRICETODAY": {
+          "type": "double"
+        },
+        "MARKETPRICE": {
+          "type": "double"
+        },
+        "LASTTOPREVPRICE": {
+          "type": "double"
+        },
+        "NUMTRADES": {
+          "type": "int32"
+        },
+        "VOLTODAY": {
+          "type": "int64"
+        },
+        "VALTODAY": {
+          "type": "int64"
+        },
+        "VALTODAY_USD": {
+          "type": "int64"
+        },
+        "ETFSETTLEPRICE": {
+          "type": "double"
+        },
+        "TRADINGSTATUS": {
+          "type": "string",
+          "bytes": 3,
+          "max_size": 0
+        },
+        "UPDATETIME": {
+          "type": "time",
+          "bytes": 10,
+          "max_size": 0
+        },
+        "LASTBID": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "LASTOFFER": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "LCLOSEPRICE": {
+          "type": "double"
+        },
+        "LCURRENTPRICE": {
+          "type": "double"
+        },
+        "MARKETPRICE2": {
+          "type": "double"
+        },
+        "NUMBIDS": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "NUMOFFERS": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "CHANGE": {
+          "type": "double"
+        },
+        "TIME": {
+          "type": "time",
+          "bytes": 10,
+          "max_size": 0
+        },
+        "HIGHBID": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "LOWOFFER": {
+          "type": "undefined",
+          "bytes": 0,
+          "max_size": 0
+        },
+        "PRICEMINUSPREVWAPRICE": {
+          "type": "double"
+        },
+        "OPENPERIODPRICE": {
+          "type": "double"
+        },
+        "SEQNUM": {
+          "type": "int64"
+        },
+        "SYSTIME": {
+          "type": "datetime",
+          "bytes": 19,
+          "max_size": 0
+        },
+        "CLOSINGAUCTIONPRICE": {
+          "type": "double"
+        },
+        "CLOSINGAUCTIONVOLUME": {
+          "type": "double"
+        },
+        "ISSUECAPITALIZATION": {
+          "type": "double"
+        },
+        "ISSUECAPITALIZATION_UPDATETIME": {
+          "type": "time",
+          "bytes": 10,
+          "max_size": 0
+        },
+        "ETFSETTLECURRENCY": {
+          "type": "string",
+          "bytes": 18,
+          "max_size": 0
+        },
+        "VALTODAY_RUR": {
+          "type": "int64"
+        },
+        "TRADINGSESSION": {
+          "type": "string",
+          "bytes": 3,
+          "max_size": 0
+        },
+        "TRENDISSUECAPITALIZATION": {
+          "type": "double"
+        }
+      },
+      "columns": [
+        "SECID",
+        "BOARDID",
+        "BID",
+        "BIDDEPTH",
+        "OFFER",
+        "OFFERDEPTH",
+        "SPREAD",
+        "BIDDEPTHT",
+        "OFFERDEPTHT",
+        "OPEN",
+        "LOW",
+        "HIGH",
+        "LAST",
+        "LASTCHANGE",
+        "LASTCHANGEPRCNT",
+        "QTY",
+        "VALUE",
+        "VALUE_USD",
+        "WAPRICE",
+        "LASTCNGTOLASTWAPRICE",
+        "WAPTOPREVWAPRICEPRCNT",
+        "WAPTOPREVWAPRICE",
+        "CLOSEPRICE",
+        "MARKETPRICETODAY",
+        "MARKETPRICE",
+        "LASTTOPREVPRICE",
+        "NUMTRADES",
+        "VOLTODAY",
+        "VALTODAY",
+        "VALTODAY_USD",
+        "ETFSETTLEPRICE",
+        "TRADINGSTATUS",
+        "UPDATETIME",
+        "LASTBID",
+        "LASTOFFER",
+        "LCLOSEPRICE",
+        "LCURRENTPRICE",
+        "MARKETPRICE2",
+        "NUMBIDS",
+        "NUMOFFERS",
+        "CHANGE",
+        "TIME",
+        "HIGHBID",
+        "LOWOFFER",
+        "PRICEMINUSPREVWAPRICE",
+        "OPENPERIODPRICE",
+        "SEQNUM",
+        "SYSTIME",
+        "CLOSINGAUCTIONPRICE",
+        "CLOSINGAUCTIONVOLUME",
+        "ISSUECAPITALIZATION",
+        "ISSUECAPITALIZATION_UPDATETIME",
+        "ETFSETTLECURRENCY",
+        "VALTODAY_RUR",
+        "TRADINGSESSION",
+        "TRENDISSUECAPITALIZATION"
+      ],
+      "data": [
+        [
+          "SBER",
+          "TQBR",
+          "None",
+          "None",
+          "None",
+          "None",
+          0,
+          0,
+          0,
+          256.6,
+          256.6,
+          268.91,
+          268.21,
+          0,
+          0,
+          1,
+          2682.1,
+          29.9,
+          263.87,
+          0,
+          1.56,
+          4.05,
+          "None",
+          263.49,
+          260.58,
+          4.51,
+          168933,
+          84668740,
+          22341539421,
+          249079000,
+          "None",
+          "N",
+          "23:50:05",
+          "None",
+          "None",
+          267.1,
+          268.11,
+          263.49,
+          "None",
+          "None",
+          11.57,
+          "23:49:58",
+          "None",
+          "None",
+          8.39,
+          267.56,
+          20231218000501,
+          "2023-12-18 00:05:01",
+          267.1,
+          581830,
+          5789835323080,
+          "23:49:58",
+          "None",
+          22341539421,
+          "None",
+          249760988360
+        ]
+      ]
+    },
+    "dataversion": {
+      "metadata": {
+        "data_version": {
+          "type": "int32"
+        },
+        "seqnum": {
+          "type": "int64"
+        }
+      },
+      "columns": [
+        "data_version",
+        "seqnum"
+      ],
+      "data": [
+        [
+          7979,
+          20231215235958
+        ]
+      ]
+    },
+    "marketdata_yields": {
+      "metadata": {
+        "boardid": {
+          "type": "string",
+          "bytes": 12,
+          "max_size": 0
+        },
+        "secid": {
+          "type": "string",
+          "bytes": 36,
+          "max_size": 0
+        }
+      },
+      "columns": [
+        "boardid",
+        "secid"
+      ],
+      "data": []
+    }
+  },
+  "moex_test_ticker_data_successful_output": {
+    "Ticker": "SBER",
+    "Current price": "260.58 RUB",
+    "Market cap": "84668740 RUB",
+    "P/E": "4.05"
+  }
+}
+
