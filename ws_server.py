@@ -1,21 +1,22 @@
 import json
 import threading
 import websockets
-
-from cryptoex import Cryptoex
-from moex_exchange import MoexExchange
+from src.cryptoex import Cryptoex
+from websockets.sync.server import serve
+#from .moex_exchange import MoexExchange
 import time
 
 """
  WebSocket server code file
 """
-
+class  MoexExchange:
+    class BadExchangeResponse(Exception): pass
 cryptoex = Cryptoex()
 """
 an instance of a class for working with crypto exchanges
 """
 
-moex = MoexExchange()
+moex = 1 #MoexExchange()
 """
 an instance of a class for working with stock exchanges
 """
@@ -310,7 +311,6 @@ def handle(websocket):
 
 
 if __name__ == "__main__":
-    from websockets.sync.server import serve
     with serve(handle, "127.0.0.1", 8765) as ws_server:
         print("server started")
         ws_server.serve_forever()

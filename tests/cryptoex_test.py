@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import Mock
 import requests
-from cryptoex import Cryptoex
-import json
-data_IO = json.loads(open("tests_data_IO.json").read())
+from ..src.cryptoex import Cryptoex
+import json, os
+data_IO = json.loads(open(os.path.dirname(os.path.realpath(__file__))+"/tests_data_IO.json").read())
 cryptoex = Cryptoex()
 
 # ------------------------  exchange_data testing ------------------------ #

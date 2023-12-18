@@ -1,9 +1,11 @@
 import threading
 import pytest
 from unittest.mock import Mock
-import ws_server as s
 import json
-from cryptoex import Cryptoex
+
+from .. src.cryptoex import Cryptoex
+from .. import ws_server as s
+
 test_request = {"type": "ticker_stream", "data": {"ticker": "BTC-USDT", "exchange": "Bybit"}, "timeout": 10, "count": 5}
 
 
