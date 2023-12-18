@@ -78,6 +78,7 @@ def make_error_msg(key):
     return f"{key}: {Errors[key]}"
 
 
+# лучше делать декоратором, но непонятно как тестировать тогда
 def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
     """a function that makes sending messages safe
 
@@ -110,6 +111,8 @@ def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
         response = make_error_msg("WPV 0x02")
     except Cryptoex.BadExchangeError:
         response = make_error_msg("WPV 0x03")
+    except MoexExchange.BadExchangeResponse:
+        response = make_error_msg("BExR 0x01")
     except Exception:
         response = make_error_msg("UnErr")
     if thread_id in sockets[str(websocket.id)]:
@@ -267,7 +270,7 @@ def manage(request, websocket):
         return
     sockets[str(websocket.id)].add(thread_id)
     try:
-        count, timeout = int(request.get('count', default["count"])), int(request.get('timeout', default["timeout"]))
+        count, timeout = int(request.get('count', default["count"])), float(request.get('timeout', default["timeout"]))
     except (ValueError, TypeError):
         websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
         return
@@ -283,6 +286,7 @@ def manage(request, websocket):
 
 
 def handle(websocket):
+    print("new client!")
     """
     A function that listens to the requests of the websocket
 
@@ -307,6 +311,6 @@ def handle(websocket):
 
 if __name__ == "__main__":
     from websockets.sync.server import serve
-    with serve(handle, "localhost", 8765) as ws_server:
+    with serve(handle, "127.0.0.1", 8765) as ws_server:
         print("server started")
         ws_server.serve_forever()

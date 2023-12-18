@@ -94,7 +94,7 @@ class Cryptoex:
                     diff = len(self.default_dkey)-len(keys)
                     raise self.InitError(f"Error: {exchange} {dkey} must be supplemented with {diff} keys")
 
-    def klines(self, ticker, interval, limit):
+    def klines(self, ticker, interval, limit, **kwargs):
         """Function of sending data for plotting
 
         The function makes a request to the exchange and allocates from it the start and end times,
@@ -122,7 +122,7 @@ class Cryptoex:
                   'interval': conv_interval[interval], 'close_price': [x[4] for x in response]}
         return result
 
-    def exchange_data(self, exchange):  # get all exchange tickers
+    def exchange_data(self, exchange, **kwargs):  # get all exchange tickers
         """
         Function to get the data of all tickers of a defined exchange
 
@@ -160,7 +160,7 @@ class Cryptoex:
             result.append(r)
         return result
 
-    def ticker_data(self, ticker, exchange):
+    def ticker_data(self, ticker, exchange, **kwargs):
         """
         Function to get the data of defined ticker of defined exchange
 
