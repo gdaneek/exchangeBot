@@ -140,18 +140,19 @@ Telegram-бот для получения информации о тикерах
 
 1. Переходим по ссылке https://t.me/ExchangeDataProcessing_bot и вводим команду /start.
 2. Указываем тип запроса. Если тип запроса указан неверно - бот предложит ввести его заново
-		![[Pasted image 20231220083530.png]]
+		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/1.png)
 
 3. Выбираем тикер или биржу. После выбора тикера и биржи указываем необязательные параметры 
-		![[Pasted image 20231220084327.png]]
+		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/2.png)
 
 4. Подтверджаем корректность введённых данных:
-		![[Pasted image 20231220090456.png]]
+		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/3.png)
+
 		*Если данные введены неверно, бот откинет вас в точку /start*
 
 5.  Получаем результат
-		![[Pasted image 20231220090618.png]]
+		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/4.png)
 		Результат для ticker_stream:
-		![[Pasted image 20231220091012.png]]
+		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/5.png)
 
 > Бот может попросить вас ввести IP сервера вручную, если запрос окажется неудачным. Если сервер недоступен - укажите IP-адрес (локальный или глобальный) устройства, на котором запущен сервер и попробуйте подключиться ещё раз.
