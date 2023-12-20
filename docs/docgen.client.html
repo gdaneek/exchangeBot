@@ -1,0 +1,1476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>docgen.client</title>
+    <meta name="generator" content="pydoctor 22.9.1"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          docgen <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="search-results-container" style="display: none;">
+        
+        <div id="search-buttons">
+          <span class="label label-default" id="search-docstrings-button">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+              search in docstrings
+            </input>
+          </label>
+          </span>
+          
+        </div>
+        
+        <noscript>
+            <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+        </noscript>
+
+        <div class="hint" id="search-help-box">
+          <p class="rst-last">
+      
+            Search bar offers the following options:
+            <ul>   
+                <li>
+                  <strong>Term presence.</strong> The below example searches for documents that 
+                    must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                </li> 
+
+                <li>
+                  <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                </li> 
+
+                <li>
+                  <strong>Search in specific fields.</strong> The following search matches all objects 
+                  in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+
+                  <p>
+                    Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                    Last two fields are only applicable if "search in docstrings" is enabled.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>Fuzzy matches.</strong> The following search matches all documents 
+                  that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                </li>
+            </ul>
+
+          </p>
+        </div>
+
+        <div id="search-status"> </div>
+
+        <div class="warning" id="search-warn-box" style="display: none;">
+          <p class="rst-last"><span id="search-warn"></span></p>
+        </div>
+
+        <table id="search-results">
+          <!-- Filled dynamically by JS -->
+        </table>
+        
+        <div style="margin-top: 8px;">
+          <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</nav>
+    
+    <div class="container-fluid">
+
+      <!-- Side navigation -->
+      <div class="sidebarcontainer" style="display: none;">
+        
+        <div class="sidebar"><nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code class="thisobject"><a href="docgen.client.html" class="internal-link" title="This module">client</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Functions</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#emul_send" class="internal-link" title="docgen.client.emul_send">emul<wbr></wbr>_send</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#handle_callback_query" class="internal-link" title="docgen.client.handle_callback_query">handle<wbr></wbr>_callback<wbr></wbr>_query</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ip_updater" class="internal-link" title="docgen.client.ip_updater">ip<wbr></wbr>_updater</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_count" class="internal-link" title="docgen.client.process_count">process<wbr></wbr>_count</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_ex_stream" class="internal-link" title="docgen.client.process_ex_stream">process<wbr></wbr>_ex<wbr></wbr>_stream</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_exchange" class="internal-link" title="docgen.client.process_exchange">process<wbr></wbr>_exchange</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_klines_stream" class="internal-link" title="docgen.client.process_klines_stream">process<wbr></wbr>_klines<wbr></wbr>_stream</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_stream_function" class="internal-link" title="docgen.client.process_stream_function">process<wbr></wbr>_stream<wbr></wbr>_function</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_ticker" class="internal-link" title="docgen.client.process_ticker">process<wbr></wbr>_ticker</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_ticker_stream" class="internal-link" title="docgen.client.process_ticker_stream">process<wbr></wbr>_ticker<wbr></wbr>_stream</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#process_timeout" class="internal-link" title="docgen.client.process_timeout">process<wbr></wbr>_timeout</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#request" class="internal-link" title="docgen.client.request">request</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#scriner_list_processing" class="internal-link" title="docgen.client.scriner_list_processing">scriner<wbr></wbr>_list<wbr></wbr>_processing</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#scriner_list_start" class="internal-link" title="docgen.client.scriner_list_start">scriner<wbr></wbr>_list<wbr></wbr>_start</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#scriner_list_updater" class="internal-link" title="docgen.client.scriner_list_updater">scriner<wbr></wbr>_list<wbr></wbr>_updater</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#scriner_update_sender" class="internal-link" title="docgen.client.scriner_update_sender">scriner<wbr></wbr>_update<wbr></wbr>_sender</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#send" class="internal-link" title="docgen.client.send">send</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#show_user" class="internal-link" title="docgen.client.show_user">show<wbr></wbr>_user</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#start" class="internal-link" title="docgen.client.start">start</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#usage" class="internal-link" title="docgen.client.usage">usage</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Variables</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#IP" class="internal-link" title="docgen.client.IP">IP</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#bot" class="internal-link" title="docgen.client.bot">bot</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#chat_ident" class="internal-link" title="docgen.client.chat_ident">chat<wbr></wbr>_ident</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#dataset" class="internal-link" title="docgen.client.dataset">dataset</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ids" class="internal-link" title="docgen.client.ids">ids</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#scriner_lists" class="internal-link" title="docgen.client.scriner_lists">scriner<wbr></wbr>_lists</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#stream_functions" class="internal-link" title="docgen.client.stream_functions">stream<wbr></wbr>_functions</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Package</span>
+        <code><a href="index.html" class="internal-link" title="The parent of this module">docgen</a></code> 
+      </div>
+      
+      <div>
+        
+
+        <div class="childrenKindTitle">Modules</div>
+        <ul>
+    
+    <li class=" thisobject">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="docgen.client.html" class="internal-link" title="docgen.client">client</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="docgen.cryptoex.html" class="internal-link" title="docgen.cryptoex">cryptoex</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="docgen.moex_exchange.html" class="internal-link" title="docgen.moex_exchange">moex<wbr></wbr>_exchange</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="docgen.ws_server.html" class="internal-link" title="docgen.ws_server">ws<wbr></wbr>_server</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+        
+
+        
+         
+
+        
+         
+
+        
+         
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        </div>
+        <div id="collapseSideBar">
+          <a class="btn btn-link" onclick="toggleSideBarCollapse()" title="Toggle Sidebar Collapse">
+          </a>
+        </div> 
+        <script src="sidebartoggle.js" type="text/javascript"></script>
+       
+      </div>
+
+      <div id="main" class="">
+        
+
+        
+
+        <div class="page-header">
+          <h1 class="module"><code><code><a href="index.html" class="internal-link">docgen</a></code><wbr></wbr>.<code><a href="docgen.client.html" class="internal-link" title="docgen.client">client</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          module documentation
+        </div>
+
+        <div class="extrasDocstring">
+          
+          <p></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p class="undocumented">Undocumented</p></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id2">
+  
+  
+  <tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#emul_send" class="internal-link" title="docgen.client.emul_send">emul<wbr></wbr>_send</a></code></td>
+    <td>Function, that emulates work of server :param req: all data for building request :type req: dict :param count: amount of data updates :type count: str :param block_id: identificator of request result for client app :type block_id: str :param func: name of request type :type func: str :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#handle_callback_query" class="internal-link" title="docgen.client.handle_callback_query">handle<wbr></wbr>_callback<wbr></wbr>_query</a></code></td>
+    <td>Function, that reads yes/no answer for correction of dataset :param call: telebot method for handle InlineKeyBoard responses :type call: Any :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#ip_updater" class="internal-link" title="docgen.client.ip_updater">ip<wbr></wbr>_updater</a></code></td>
+    <td>Function, that updates user IP in case of server connection errors :param message: new server IP :type message: str :param args: params for forming server request :type args: Any :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_count" class="internal-link" title="docgen.client.process_count">process<wbr></wbr>_count</a></code></td>
+    <td>Function, that reads count param for request :param message: user reply for count param for count of data updates :type message: str :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_ex_stream" class="internal-link" title="docgen.client.process_ex_stream">process<wbr></wbr>_ex<wbr></wbr>_stream</a></code></td>
+    <td>Function, that makes exchange_stream request type and processes returned from server data :param response: full data pack for all specified exchange tickers :type response: dict :param block_id: identificator for response :type block_id: str :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_exchange" class="internal-link" title="docgen.client.process_exchange">process<wbr></wbr>_exchange</a></code></td>
+    <td>Function, that reads exchange param from user :param message: title of specific exchange :type message: str :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_klines_stream" class="internal-link" title="docgen.client.process_klines_stream">process<wbr></wbr>_klines<wbr></wbr>_stream</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_stream_function" class="internal-link" title="docgen.client.process_stream_function">process<wbr></wbr>_stream<wbr></wbr>_function</a></code></td>
+    <td>Function, that gets stream_function param for request :param call: user press button reply with stream function type :type call: dict :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_ticker" class="internal-link" title="docgen.client.process_ticker">process<wbr></wbr>_ticker</a></code></td>
+    <td>Function, that reads ticker param for request :param message: user input with ticker to process :type message: str :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_ticker_stream" class="internal-link" title="docgen.client.process_ticker_stream">process<wbr></wbr>_ticker<wbr></wbr>_stream</a></code></td>
+    <td>Function, that makes exchange_stream request type and processes returned from server data :param response: full data pack for all specified exchange tickers :type response: dict :param block_id: identificator for response :type block_id: str :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#process_timeout" class="internal-link" title="docgen.client.process_timeout">process<wbr></wbr>_timeout</a></code></td>
+    <td>Function, that gets timeout param for request :param message: user reply for timeout :type message: int :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#request" class="internal-link" title="docgen.client.request">request</a></code></td>
+    <td>Function, that gets request type :param call: telebot method for handle InlineKeyBoard responses :type call: Any :return: - :rtype: None :raises:</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#scriner_list_processing" class="internal-link" title="docgen.client.scriner_list_processing">scriner<wbr></wbr>_list<wbr></wbr>_processing</a></code></td>
+    <td>Function, that adds new scriner list in scriner_lists :param message: User input string with tickers, count, timeout and exchange params :type message: str :return: - :rtype: None :raises ValueError: if tickers input dont consist tickers or params count, timeout, exchange...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#scriner_list_start" class="internal-link" title="docgen.client.scriner_list_start">scriner<wbr></wbr>_list<wbr></wbr>_start</a></code></td>
+    <td>Function, that processes creating scriner-list by user :param call: param, that contains data about button, that was pressed by user :type call:  telebot.TeleBot :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#scriner_list_updater" class="internal-link" title="docgen.client.scriner_list_updater">scriner<wbr></wbr>_list<wbr></wbr>_updater</a></code></td>
+    <td>Function, that reads list of id numbers of scriner lists for update :param message: internal telebot object for registering next handler and processing scriner lists update :type message: str :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#scriner_update_sender" class="internal-link" title="docgen.client.scriner_update_sender">scriner<wbr></wbr>_update<wbr></wbr>_sender</a></code></td>
+    <td>Function, that processes scriner list update :param message: string with id numbers of scriners list, that bot needs to update :type message: str :return: - :rtype: None</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#send" class="internal-link" title="docgen.client.send">send</a></code></td>
+    <td>Function, that processes request sending to web socket server :param req: all data for building request :type req: dict :param count: amount of data updates :type count: str :param block_id: identificator of request result for client app :type block_id: str :param func: name of request type :type func: str :return: - :rtype: None :raise ConnectionRefusedError: in case of bad connection with server.</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#show_user" class="internal-link" title="docgen.client.show_user">show<wbr></wbr>_user</a></code></td>
+    <td>Function, that shows input data for user and makes buttons for approve or rejection :param message: user last message :type message: str :param dataset: dict with data for response (stream_function, ticker, count, timeout, exchange) :type dataset: dict :return: - :rtype: None...</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#start" class="internal-link" title="docgen.client.start">start</a></code></td>
+    <td>Function, that processes first bot launch and re-launch :param message: command :type message: str :return: - :rtype: None :raises:</td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#usage" class="internal-link" title="docgen.client.usage">usage</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="constant">
+    
+    <td>Constant</td>
+    <td><code><a href="#IP" class="internal-link" title="docgen.client.IP">IP</a></code></td>
+    <td>IP parametr for server</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#bot" class="internal-link" title="docgen.client.bot">bot</a></code></td>
+    <td>Telebot class with BotFather token for @ExchangeDataProcessing_bot</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#chat_ident" class="internal-link" title="docgen.client.chat_ident">chat<wbr></wbr>_ident</a></code></td>
+    <td>chat_id parametr</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#dataset" class="internal-link" title="docgen.client.dataset">dataset</a></code></td>
+    <td>Dict for collecting user data for request</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#ids" class="internal-link" title="docgen.client.ids">ids</a></code></td>
+    <td>Dict of dicts for collecting unique requests and updating requests, that was done earlier</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#scriner_lists" class="internal-link" title="docgen.client.scriner_lists">scriner<wbr></wbr>_lists</a></code></td>
+    <td>Dict of scriner lists</td>
+  </tr><tr class="variable">
+    
+    <td>Variable</td>
+    <td><code><a href="#stream_functions" class="internal-link" title="docgen.client.stream_functions">stream<wbr></wbr>_functions</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basefunction">
+  
+  
+  <a name="docgen.client.emul_send">
+    
+  </a>
+  <a name="emul_send">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">emul_send</span>(req, count, block_id, func):
+    
+    <a class="headerLink" href="#emul_send" title="docgen.client.emul_send">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that emulates work of server
+:param req: all data for building request
+:type req: dict
+:param count: amount of data updates
+:type count: str
+:param block_id: identificator of request result for client app
+:type block_id: str
+:param func: name of request type
+:type func: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.handle_callback_query">
+    
+  </a>
+  <a name="handle_callback_query">
+    
+  </a>
+  <div class="functionHeader">
+    @bot.callback_query_handler(<wbr></wbr>func=(lambda call: call.data == 'yes' or call.data == 'no'))<br />
+    <span class="py-keyword">def</span> <span class="py-defname">handle_callback_query</span>(call):
+    
+    <a class="headerLink" href="#handle_callback_query" title="docgen.client.handle_callback_query">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that reads yes/no answer for correction of dataset
+:param call: telebot method for handle InlineKeyBoard responses
+:type call: Any
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.ip_updater">
+    
+  </a>
+  <a name="ip_updater">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">ip_updater</span>(message, *args):
+    
+    <a class="headerLink" href="#ip_updater" title="docgen.client.ip_updater">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that updates user IP in case of server connection errors
+:param message: new server IP
+:type message: str
+:param args: params for forming server request
+:type args: Any
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_count">
+    
+  </a>
+  <a name="process_count">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_count</span>(message):
+    
+    <a class="headerLink" href="#process_count" title="docgen.client.process_count">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that reads count param for request
+:param message: user reply for count param for count of data updates
+:type message: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_ex_stream">
+    
+  </a>
+  <a name="process_ex_stream">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_ex_stream</span>(response, block_id):
+    
+    <a class="headerLink" href="#process_ex_stream" title="docgen.client.process_ex_stream">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that makes exchange_stream request type and processes returned from server data
+:param response: full data pack for all specified exchange tickers
+:type response: dict
+:param block_id: identificator for response
+:type block_id: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_exchange">
+    
+  </a>
+  <a name="process_exchange">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_exchange</span>(message):
+    
+    <a class="headerLink" href="#process_exchange" title="docgen.client.process_exchange">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that reads exchange param from user
+:param message: title of specific exchange
+:type message: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_klines_stream">
+    
+  </a>
+  <a name="process_klines_stream">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_klines_stream</span>(response, block_id):
+    
+    <a class="headerLink" href="#process_klines_stream" title="docgen.client.process_klines_stream">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_stream_function">
+    
+  </a>
+  <a name="process_stream_function">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_stream_function</span>(message):
+    
+    <a class="headerLink" href="#process_stream_function" title="docgen.client.process_stream_function">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that gets stream_function param for request
+:param call: user press button reply with stream function type
+:type call: dict
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_ticker">
+    
+  </a>
+  <a name="process_ticker">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_ticker</span>(message):
+    
+    <a class="headerLink" href="#process_ticker" title="docgen.client.process_ticker">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that reads ticker param for request
+:param message: user input with ticker to process
+:type message: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_ticker_stream">
+    
+  </a>
+  <a name="process_ticker_stream">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_ticker_stream</span>(response, block_id):
+    
+    <a class="headerLink" href="#process_ticker_stream" title="docgen.client.process_ticker_stream">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that makes exchange_stream request type and processes returned from server data
+:param response: full data pack for all specified exchange tickers
+:type response: dict
+:param block_id: identificator for response
+:type block_id: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.process_timeout">
+    
+  </a>
+  <a name="process_timeout">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">process_timeout</span>(message):
+    
+    <a class="headerLink" href="#process_timeout" title="docgen.client.process_timeout">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that gets timeout param for request
+:param message: user reply for timeout
+:type message: int
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.request">
+    
+  </a>
+  <a name="request">
+    
+  </a>
+  <div class="functionHeader">
+    @bot.callback_query_handler(<wbr></wbr>func=(lambda call: call.data == 'request'))<br />
+    <span class="py-keyword">def</span> <span class="py-defname">request</span>(call):
+    
+    <a class="headerLink" href="#request" title="docgen.client.request">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that gets request type
+:param call: telebot method for handle InlineKeyBoard responses
+:type call: Any
+:return: -
+:rtype: None
+:raises:</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.scriner_list_processing">
+    
+  </a>
+  <a name="scriner_list_processing">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">scriner_list_processing</span>(message):
+    
+    <a class="headerLink" href="#scriner_list_processing" title="docgen.client.scriner_list_processing">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that adds new scriner list in scriner_lists
+:param message: User input string with tickers, count, timeout and exchange params
+:type message: str
+:return: -
+:rtype: None
+:raises ValueError: if tickers input dont consist tickers or params count, timeout, exchange</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.scriner_list_start">
+    
+  </a>
+  <a name="scriner_list_start">
+    
+  </a>
+  <div class="functionHeader">
+    @bot.callback_query_handler(<wbr></wbr>func=(lambda call: call.data == 'scriner'))<br />
+    <span class="py-keyword">def</span> <span class="py-defname">scriner_list_start</span>(call):
+    
+    <a class="headerLink" href="#scriner_list_start" title="docgen.client.scriner_list_start">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that processes creating scriner-list by user
+:param call: param, that contains data about button, that was pressed by user
+:type call:  telebot.TeleBot
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.scriner_list_updater">
+    
+  </a>
+  <a name="scriner_list_updater">
+    
+  </a>
+  <div class="functionHeader">
+    @bot.message_handler(<wbr></wbr>commands=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">update</span><span class="rst-variable-quote">'</span>])<br />
+    <span class="py-keyword">def</span> <span class="py-defname">scriner_list_updater</span>(message):
+    
+    <a class="headerLink" href="#scriner_list_updater" title="docgen.client.scriner_list_updater">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that reads list of id numbers of scriner lists for update
+:param message: internal telebot object for registering next handler and processing scriner lists update
+:type message: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.scriner_update_sender">
+    
+  </a>
+  <a name="scriner_update_sender">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">scriner_update_sender</span>(message):
+    
+    <a class="headerLink" href="#scriner_update_sender" title="docgen.client.scriner_update_sender">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that processes scriner list update
+:param message: string with id numbers of scriners list, that bot needs to update
+:type message: str
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.send">
+    
+  </a>
+  <a name="send">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">send</span>(req, count, block_id, func):
+    
+    <a class="headerLink" href="#send" title="docgen.client.send">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that processes request sending to web socket server
+:param req: all data for building request
+:type req: dict
+:param count: amount of data updates
+:type count: str
+:param block_id: identificator of request result for client app
+:type block_id: str
+:param func: name of request type
+:type func: str
+:return: -
+:rtype: None
+:raise ConnectionRefusedError: in case of bad connection with server.</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.show_user">
+    
+  </a>
+  <a name="show_user">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">show_user</span>(message, dataset):
+    
+    <a class="headerLink" href="#show_user" title="docgen.client.show_user">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that shows input data for user and makes buttons for approve or rejection
+:param message: user last message
+:type message: str
+:param dataset: dict with data for response (stream_function, ticker, count, timeout, exchange)
+:type dataset: dict
+:return: -
+:rtype: None</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.start">
+    
+  </a>
+  <a name="start">
+    
+  </a>
+  <div class="functionHeader">
+    @bot.message_handler(<wbr></wbr>commands=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">start</span><span class="rst-variable-quote">'</span>])<br />
+    <span class="py-keyword">def</span> <span class="py-defname">start</span>(message):
+    
+    <a class="headerLink" href="#start" title="docgen.client.start">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Function, that processes first bot launch and re-launch
+:param message: command
+:type message: str
+:return: -
+:rtype: None
+:raises:</p>
+</div>
+  </div>
+</div><div class="basefunction">
+  
+  
+  <a name="docgen.client.usage">
+    
+  </a>
+  <a name="usage">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">usage</span>():
+    
+    <a class="headerLink" href="#usage" title="docgen.client.usage">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseconstant">
+  
+  
+  <a name="docgen.client.IP">
+    
+  </a>
+  <a name="IP">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">IP</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#IP" title="docgen.client.IP">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>IP parametr for server</p>
+</div>
+    <table class="valueTable"><tr class="fieldStart"><td class="fieldName">Value</td></tr><tr><td><pre class="constant-value"><code><span class="rst-variable-quote">'</span><span class="rst-variable-string">127.0.0.1</span><span class="rst-variable-quote">'</span></code></pre></td></tr></table>
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.bot">
+    
+  </a>
+  <a name="bot">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">bot</span> =
+    
+    <a class="headerLink" href="#bot" title="docgen.client.bot">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>Telebot class with BotFather token for @ExchangeDataProcessing_bot</p>
+</div>
+    
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.chat_ident">
+    
+  </a>
+  <a name="chat_ident">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">chat_ident</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#chat_ident" title="docgen.client.chat_ident">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>chat_id parametr</p>
+</div>
+    
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.dataset">
+    
+  </a>
+  <a name="dataset">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">dataset</span>: <code>dict</code> =
+    
+    <a class="headerLink" href="#dataset" title="docgen.client.dataset">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>Dict for collecting user data for request</p>
+</div>
+    
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.ids">
+    
+  </a>
+  <a name="ids">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">ids</span>: <code>dict[<wbr></wbr>str, <wbr></wbr>dict]</code> =
+    
+    <a class="headerLink" href="#ids" title="docgen.client.ids">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>Dict of dicts for collecting unique requests and updating requests, that was done earlier</p>
+</div>
+    
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.scriner_lists">
+    
+  </a>
+  <a name="scriner_lists">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">scriner_lists</span>: <code>dict</code> =
+    
+    <a class="headerLink" href="#scriner_lists" title="docgen.client.scriner_lists">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p>Dict of scriner lists</p>
+</div>
+    
+  </div>
+</div><div class="basevariable">
+  
+  
+  <a name="docgen.client.stream_functions">
+    
+  </a>
+  <a name="stream_functions">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">stream_functions</span> =
+    
+    <a class="headerLink" href="#stream_functions" title="docgen.client.stream_functions">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+
+  
+  <div class="container">
+    <a href="index.html">API Documentation</a> for docgen,
+  generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+    22.9.1 at 2023-12-20 09:01:46.
+  </div>
+
+  <!-- Search related scripts needs to be loaded at the end of HTML 
+    parsing not to introduce overhead and display HTML data asap -->
+  <script src="ajax.js" type="text/javascript"></script>
+  <script src="searchlib.js" type="text/javascript"></script>
+  <script src="search.js" type="text/javascript"></script>
+
+</footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>

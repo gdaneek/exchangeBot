@@ -7,24 +7,25 @@ import matplotlib.pyplot as plt
 import time
 
 
-# Creating telebot class
 bot = telebot.TeleBot("6798743608:AAH605Riu5divstJJMlOtoJ5oGrj2A761gM")
+"""Telebot class with BotFather token for @ExchangeDataProcessing_bot"""
 
-# Dict for collecting user data for request
 dataset = {}
+"""Dict for collecting user data for request"""
 
-# Dict of dicts for collecting unique requests and updating requests, that was done earlier
 ids = {"exchange_stream": {},
        "klines_stream": {},
        "ticker_stream": {}}
+"""Dict of dicts for collecting unique requests and updating requests, that was done earlier"""
 
-# Dict of scriner lists
 scriner_lists = {}
+"""Dict of scriner lists"""
 
-# chat_id parametr
 chat_ident = ""
+"""chat_id parametr"""
 
 IP = "127.0.0.1"
+"""IP parametr for server"""
 
 # Processing /start command
 @bot.message_handler(commands=['start'])
@@ -59,18 +60,19 @@ def request(call):
     :rtype: None
     :raises:
     """
-    markup = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text='Данные по бирже', callback_data='exchange_stream')
-    button2 = types.InlineKeyboardButton(text='График', callback_data='klines_stream')
-    button3 = types.InlineKeyboardButton(text='Данные по тикеру', callback_data='ticker_stream')
-    markup.add(button1, button2, button3)
+    # markup = types.InlineKeyboardMarkup()
+    # button1 = types.InlineKeyboardButton(text='Данные по бирже', callback_data='exchange_stream')
+    # button2 = types.InlineKeyboardButton(text='График', callback_data='klines_stream')
+    # button3 = types.InlineKeyboardButton(text='Данные по тикеру', callback_data='ticker_stream')
+    # markup.add(button1, button2, button3)
     bot.send_message(call.message.chat.id, 'Укажите тип запроса:')
     bot.send_message(call.message.chat.id, '1. exchange_stream: получить данные с конкретной биржи по всем тикерам\n'
                                            '2. klines_stream: получить график изменения цены по тикеру\n'
-                                           '3. ticker_stream: получить данные по конкретному тикеру', reply_markup=markup)
+                                           '3. ticker_stream: получить данные по конкретному тикеру') # , reply_markup=markup)
     bot.register_next_step_handler(call.message, process_stream_function)
 
 
+# Processing scriner-list button call
 @bot.callback_query_handler(func=lambda call: call.data == 'scriner')
 def scriner_list_start(call):
     """
@@ -91,6 +93,14 @@ def scriner_list_start(call):
 
 
 def scriner_list_processing(message):
+    """
+    Function, that adds new scriner list in scriner_lists
+    :param message: User input string with tickers, count, timeout and exchange params
+    :type message: str
+    :return: -
+    :rtype: None
+    :raises ValueError: if tickers input dont consist tickers or params count, timeout, exchange
+    """
     global chat_ident
     try:
         tickers = message.text.strip().split()
@@ -114,6 +124,13 @@ def scriner_list_processing(message):
 
 @bot.message_handler(commands=['update'])
 def scriner_list_updater(message):
+    """
+    Function, that reads list of id numbers of scriner lists for update
+    :param message: internal telebot object for registering next handler and processing scriner lists update
+    :type message: str
+    :return: -
+    :rtype: None
+    """
     global chat_ident
     scriner_lists_ans = ("Введите id скринер-листов, которые вы хотите обновить \n"
                          "Список доступных скринер-листов для обновления: \n")
@@ -125,6 +142,13 @@ def scriner_list_updater(message):
 
 
 def scriner_update_sender(message):
+    """
+    Function, that processes scriner list update
+    :param message: string with id numbers of scriners list, that bot needs to update
+    :type message: str
+    :return: -
+    :rtype: None
+    """
     ids_for_update = message.text.strip().split()
     dataset["stream_function"] = "ticker_stream"
     for id in ids_for_update:
@@ -134,20 +158,18 @@ def scriner_update_sender(message):
             usage()
 
 
-@bot.callback_query_handler(func=lambda call: call.data == 'exchange_stream' or call.data == 'klines_stream' or call.data == 'ticker_stream')
-def process_stream_function(call):
+# @bot.callback_query_handler(func=lambda call: call.data == 'exchange_stream' or call.data == 'klines_stream' or call.data == 'ticker_stream')
+def process_stream_function(message):
     """
     Function, that gets stream_function param for request
-
-    :param message: user reply for stream_function
-    :type message: str
+    :param call: user press button reply with stream function type
+    :type call: dict
     :return: -
     :rtype: None
-    :raises:
     """
     global chat_ident
     # print(call.data)
-    stream_function = call.data
+    stream_function = message.text.strip()
     if stream_function not in ['exchange_stream', 'klines_stream', 'ticker_stream']:
         bot.send_message(chat_ident, 'Неверный тип запроса. Пожалуйста, выберите еще раз.')
         bot.register_next_step_handler(chat_ident, process_stream_function)
@@ -157,16 +179,15 @@ def process_stream_function(call):
             bot.send_message(chat_ident, 'Введите интересующий вас тикер криптовалюты или акции с биржи MOEX:')
         else:
             bot.send_message(chat_ident, 'Введите интересующую вас криптобиржу')
-        bot.register_next_step_handler(call.message, process_ticker)
+        bot.register_next_step_handler(message, process_ticker)
 
 def process_ticker(message):
     """
-    Function, that gets ticker param for request
-    :param message: user reply for ticker
+    Function, that reads ticker param for request
+    :param message: user input with ticker to process
     :type message: str
     :return: -
     :rtype: None
-    :raises:
     """
     ticker = message.text.strip()
     if "1" in ticker:
@@ -182,12 +203,11 @@ def process_ticker(message):
 
 def process_count(message):
     """
-    Function, that gets count param for request
-    :param message: user reply for count
-    :type message: int
+    Function, that reads count param for request
+    :param message: user reply for count param for count of data updates
+    :type message: str
     :return: -
     :rtype: None
-    :raises:
     """
     count = message.text.strip()
     if not count.isdigit():
@@ -206,7 +226,6 @@ def process_timeout(message):
     :type message: int
     :return: -
     :rtype: None
-    :raises:
     """
     timeout = message.text.strip()
     if not timeout.isdigit():
@@ -222,6 +241,13 @@ def process_timeout(message):
             bot.register_next_step_handler(message, process_exchange)
 
 def process_exchange(message):
+    """
+    Function, that reads exchange param from user
+    :param message: title of specific exchange
+    :type message: str
+    :return: -
+    :rtype: None
+    """
     exchange = message.text.strip()
     if not exchange.isalpha():
         bot.send_message(message.chat.id, 'Некорректное название биржи. Пожалуйста, введите еще раз.')
@@ -234,12 +260,11 @@ def process_exchange(message):
 @bot.callback_query_handler(func=lambda call: call.data == "yes" or call.data == "no")
 def handle_callback_query(call):
     """
-    Function, that gets yes/no answer for correction of dataset
+    Function, that reads yes/no answer for correction of dataset
     :param call: telebot method for handle InlineKeyBoard responses
     :type call: Any
-    :return: None
+    :return: -
     :rtype: None
-    :raises:
     """
     if call.data == 'yes':
         usage()
@@ -253,12 +278,11 @@ def show_user(message, dataset):
     """
     Function, that shows input data for user and makes buttons for approve or rejection
     :param message: user last message
-    :type message: Any
-    :param dataset: dict with data for response (stream_type)
+    :type message: str
+    :param dataset: dict with data for response (stream_function, ticker, count, timeout, exchange)
     :type dataset: dict
-    :return: None
+    :return: -
     :rtype: None
-    :raises:
     """
     if dataset["stream_function"] == "exchange_stream":
         text = f'Параметры запроса:\n\nТип запроса: {dataset["stream_function"]}\nБиржа: {dataset["exchange"]}\nКоличество обновлений: {dataset["count"]}\nИнтервал: {dataset["timeout"]} секунд\n\nКорректны ли введенные данные?'
@@ -269,12 +293,21 @@ def show_user(message, dataset):
     button_no = telebot.types.InlineKeyboardButton(text='Нет', callback_data='no')
     markup.add(button_yes, button_no)
     bot.send_message(message.chat.id, text, reply_markup=markup)
-    dataset["block_id"] = message.message_id + 1
+    # dataset["block_id"] = message.message_id + 1
     # print(dataset)
     # print(message.text)
 
 
 def ip_updater(message, *args):
+    """
+    Function, that updates user IP in case of server connection errors
+    :param message: new server IP
+    :type message: str
+    :param args: params for forming server request
+    :type args: Any
+    :return: -
+    :rtype: None
+    """
     global IP, chat_ident
     IP = message.text.strip()
     bot.send_message(chat_ident, text=f'Ok, пробуем подключиться к IP: {IP}')
@@ -282,11 +315,25 @@ def ip_updater(message, *args):
 
 
 def send(req, count, block_id, func):
+    """
+    Function, that processes request sending to web socket server
+    :param req: all data for building request
+    :type req: dict
+    :param count: amount of data updates
+    :type count: str
+    :param block_id: identificator of request result for client app
+    :type block_id: str
+    :param func: name of request type
+    :type func: str
+    :return: -
+    :rtype: None
+    :raise ConnectionRefusedError: in case of bad connection with server.
+    """
     global chat_ident, IP
     try:
-        with connect(IP) as websocket:
+        with connect("ws://"+IP+":8765") as websocket:
             websocket.send(json.dumps(req))
-            while count > 0:
+            while int(count) > 0:
                 response = websocket.recv()
                 try:
                     response = json.loads(response)
@@ -302,22 +349,43 @@ def send(req, count, block_id, func):
 
 
 def emul_send(req, count, block_id, func):
-        responses = [
-            {"Exchange": "Binance", "Trade pair": "BTCUSDT", "Price": "41033.13000000", "Fluctuation": "-2.506%"},
-            [{"Exchange": "BitMart", "Trade pair": "AFIN_USDT", "Price": "0.002039", "Fluctuation": "0.94%"},
-             {"Exchange": "BitMart", "Trade pair": "BMX_ETH", "Price": "0.00006942", "Fluctuation": "-0.7%"}],
-            {"exchange": "Binance", "ticker": "BTCUSDT", "from": 1671408000.0, "to": 1702857600.0, "interval": 86400,
-             "close_price": ["16438.88000000", "16895.56000000", "16824.67000000"]}
-        ]
-        while int(count) > 0:
-            for i in range(100):
-                responses[1].append(responses[1][0])
-            response = responses[1]
-            threading.Thread(target=func, args=[response, block_id]).start()
-            count = int(count) - 1
+    """
+    Function, that emulates work of server
+    :param req: all data for building request
+    :type req: dict
+    :param count: amount of data updates
+    :type count: str
+    :param block_id: identificator of request result for client app
+    :type block_id: str
+    :param func: name of request type
+    :type func: str
+    :return: -
+    :rtype: None
+    """
+    responses = [
+        {"Exchange": "Binance", "Trade pair": "BTCUSDT", "Price": "41033.13000000", "Fluctuation": "-2.506%"},
+        [{"Exchange": "BitMart", "Trade pair": "AFIN_USDT", "Price": "0.002039", "Fluctuation": "0.94%"},
+        {"Exchange": "BitMart", "Trade pair": "BMX_ETH", "Price": "0.00006942", "Fluctuation": "-0.7%"}],
+        {"exchange": "Binance", "ticker": "BTCUSDT", "from": 1671408000.0, "to": 1702857600.0, "interval": 86400,
+        "close_price": ["16438.88000000", "16895.56000000", "16824.67000000"]}]
+    while int(count) > 0:
+        for i in range(100):
+            responses[1].append(responses[1][0])
+        response = responses[1]
+        threading.Thread(target=func, args=[response, block_id]).start()
+        count = int(count) - 1
 
 
 def process_ex_stream(response, block_id):
+    """
+    Function, that makes exchange_stream request type and processes returned from server data
+    :param response: full data pack for all specified exchange tickers
+    :type response: dict
+    :param block_id: identificator for response
+    :type block_id: str
+    :return: -
+    :rtype: None
+    """
     global chat_ident
     print(response)
     response_text = f'{dataset["ticker"]}'
@@ -351,6 +419,15 @@ def process_ex_stream(response, block_id):
 
 
 def process_ticker_stream(response, block_id):
+    """
+        Function, that makes exchange_stream request type and processes returned from server data
+        :param response: full data pack for all specified exchange tickers
+        :type response: dict
+        :param block_id: identificator for response
+        :type block_id: str
+        :return: -
+        :rtype: None
+        """
     global chat_ident
     print(response)
     if response["Trade pair"] not in ids["ticker_stream"]:
@@ -419,11 +496,11 @@ def usage():
     dataset.pop('stream_function')
     dataset.pop('count')
     dataset.pop('timeout')
-    dataset.pop('block_id')
+    # dataset.pop('block_id')
     req['data'].update(dataset)
-    print(req)
+    # print(req)
     _args = [req, req['count'], req_id, stream_functions[req['type']]]
-    threading.Thread(target=emul_send,args=_args).start()
+    threading.Thread(target=send,args=_args).start()
 
 
 if __name__ == "__main__":

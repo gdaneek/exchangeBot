@@ -295,26 +295,29 @@ def manage(request, websocket):
 
 
 def handle(websocket):
-    """
-    A function that listens to the requests of the websocket
+    try:
+        """
+        A function that listens to the requests of the websocket
+    
+        :param websocket: current websocket client
+        :return: None
+        """
+        print("new client")
+        for request in websocket:
+            ws_id = str(websocket.id)
 
-    :param websocket: current websocket client
-    :return: None
-    """
-    for request in websocket:
-        ws_id = str(websocket.id)
-
-        if ws_id not in sockets:
-            sockets[ws_id] = set()
-        try:
-            request = json.loads(request)
-        except (json.JSONDecodeError, TypeError):
-            make_response(websocket, err_msg=make_error_msg("WRF 0x01"))
-            continue
-        if type(request) is not dict:
-            make_response(websocket, err_msg=make_error_msg("WRF 0x02"))
-            continue
-        manage(request, websocket)
+            if ws_id not in sockets:
+                sockets[ws_id] = set()
+            try:
+                request = json.loads(request)
+            except (json.JSONDecodeError, TypeError):
+                make_response(websocket, err_msg=make_error_msg("WRF 0x01"))
+                continue
+            if type(request) is not dict:
+                make_response(websocket, err_msg=make_error_msg("WRF 0x02"))
+                continue
+            manage(request, websocket)
+    except websockets.exceptions.ConnectionClosedError: pass
 
 
 if __name__ == "__main__":
