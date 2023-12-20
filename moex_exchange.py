@@ -1,6 +1,5 @@
+import json
 import requests
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 
 
 class MoexExchange:
@@ -8,13 +7,24 @@ class MoexExchange:
     A class for working with MOEX data
     """
 
+    base_url = ""
+    """
+    the URL of the exchange
+    """
+
+    class BadExchangeResponse(Exception):
+        """
+        triggered if the server response does not contain the required fields
+        """
+        pass
+
     def __init__(self):
         """
          Function checks whether the default key matches all the keys of the exchange.
+         :return: -
         :rtype: None
-        :raise InitError: If it is impossible to establish a match, the InitError will be thrown
         """
-        self.base_url = "https://api.moex.com"
+        self.base_url = "https://iss.moex.com"
 
     def make_request(self, url):
         """
@@ -24,71 +34,76 @@ class MoexExchange:
         :type url: str
         :return: dict with MOEX reply with P/E, current price, MarketCap multiplicators
         :rtype: dict
-        :raise: requests.exceptions.RequestException: In case of incorrect request or empty answer.
         """
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            raise e
+        response = requests.get(url)
+        return response.json()
 
-    def get_ticker_info(self, ticker):
+    def ticker_data(self, ticker, **kwargs):
         """
         Function, that returns information about ticker: P/E, Current price, MarketCap
 
         :param ticker: letter short name of financial active(cryptocoin or stock)
         :type ticker: str
-        :return:
-        :rtype:
-        Returns:
-            tuple: Кортеж с значениями P/E, текущей цены и MarketCap.
-
-        :raise: ValueError: In case of not-found ticker.
+        :return: information about the ticker, including P/E, market price and market cap
+        :rtype: dict
+        :raise: BadExchangeResponse: In case of not-found ticker.
         """
         url = f"{self.base_url}/iss/engines/stock/markets/shares/boards/TQBR/securities/{ticker.upper()}.json"
+        data = self.make_request(url)
+        print(data)
+        # 0 - SBER , P/E - , market price - 25-1, volume 28-1
+        if "marketdata" in data:
+            ticker = data["marketdata"]['data'][0][0]
+            current_price = data["marketdata"]["data"][0][24]
+            market_cap = data["marketdata"]["data"][0][27]
+            pe = data["marketdata"]["data"][0][21]
+            result = {
+                "Ticker": f"{ticker}",
+                "Current price": f"{current_price} RUB",
+                "Market cap": f"{market_cap} RUB",
+                "P/E":  f"{pe}"
+            }
+            return result
+        else:
+            raise self.BadExchangeResponse("Data not found")
 
-        try:
-            data = self._make_request(url)
-            if "marketdata" in data:
-                pe_ratio = data["marketdata"]["pe_ratio"]
-                current_price = data["marketdata"]["capitalization"]
-                market_cap = data["marketdata"]["market_cap"]
-                return pe_ratio, current_price, market_cap
-            else:
-                raise ValueError("Ticker not found.")
-        except requests.exceptions.RequestException as e:
-            raise e
-
-    def plot_gen(self, ticker):
+    def exchange_data(self, **kwargs):
         """
-        Сохраняет график изменения цены тикера за последний год на устройство.
-
-        Args:
-            ticker (str): Тикер акции или инструмента.
+        a function that returns information about all stock exchange tickers
+        :return: a list of dictionaries with information for each ticker
+        :type: list
         """
-        url = f"{self.base_url}/iss/history/engines/stock/markets/shares/boards/TQBR/securities/{ticker.upper()}.json"
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=365)
+        response = self.make_request(f"{self.base_url}/iss/engines/stock/markets/shares/boards/TQBR/securities.json")
 
-        try:
-            data = self._make_request(url)
-            if "history" in data:
-                prices = []
-                dates = []
-                for item in data["history"]["data"]:
-                    date = datetime.strptime(item[1], "%Y-%m-%d")
-                    if start_date <= date <= end_date:
-                        prices.append(item[7])
-                        dates.append(date)
-                plt.figure(figsize=(12, 6))
-                plt.plot(dates, prices)
-                plt.xlabel("Date")
-                plt.ylabel("Price")
-                plt.title(f"Price History for {ticker.upper()}")
-                plt.grid(True)
-                plt.savefig(f"{ticker.upper()}_price_history.png")
-            else:
-                raise ValueError("Ticker not found.")
-        except requests.exceptions.RequestException as e:
-            raise e
+        # with open("moex_ex_data_in.json", 'w') as f:
+        #     f.write(json.dumps(response))
+        result = []
+        if "marketdata" in response:
+            data = response["marketdata"]['data']
+        else:
+            raise self.BadExchangeResponse("Data not found")
+        for i in range(len(data)):
+            ticker = data[i][0]
+            current_price = data[i][24]
+            market_cap = data[i][27]
+            pe = data[i][21]
+            r = {
+                "Ticker": f"{ticker}",
+                "Current price": f"{current_price} RUB",
+                "Market cap": f"{market_cap} RUB",
+                "P/E":  f"{pe}"
+                }
+            result.append(r)
+
+        return result
+
+    def klines(self):
+        """
+            a stub function that copies the name of a similar function from cryptoex so that errors do not occur
+        """
+        pass
+
+# m = MoexExchange()
+# with open("moex_ex_data_out.json", 'w') as f:
+#     f.write(json.dumps(m.exchange_data()))
+
