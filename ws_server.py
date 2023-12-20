@@ -4,20 +4,16 @@ import websockets
 from src.cryptoex import Cryptoex
 from websockets.sync.server import serve
 
-#from .moex_exchange import MoexExchange
+from src.moex_exchange import MoexExchange
 import time
 
-"""
- WebSocket server code file
-"""
-class  MoexExchange:
-    class BadExchangeResponse(Exception): pass
+
 cryptoex = Cryptoex()
 """
 an instance of a class for working with crypto exchanges
 """
 
-moex = 1 #MoexExchange()
+moex = MoexExchange()
 """
 an instance of a class for working with stock exchanges
 """
