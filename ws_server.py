@@ -3,6 +3,7 @@ import threading
 import websockets
 from src.cryptoex import Cryptoex
 from websockets.sync.server import serve
+
 #from .moex_exchange import MoexExchange
 import time
 
@@ -80,7 +81,7 @@ def make_error_msg(key):
 
 
 # лучше делать декоратором, но непонятно как тестировать тогда
-def websocket_send(websocket, func=None, thread_id=None, err_msg="", **kwargs):
+def make_response(websocket, func=None, thread_id=None, err_msg="", **kwargs):
     """a function that makes sending messages safe
 
     The function accepts a websocket, a function whose return value must be sent, and arguments for this function.
@@ -175,7 +176,7 @@ def send_exchange_data(websocket, thread_id, **kwargs) -> None:
             time.sleep(default["alive_threads_viewing_delay"])
             continue
         _args, _kwargs = [websocket, extype.exchange_data, thread_id], {"exchange": exchange}
-        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
+        thread = threading.Thread(target=make_response, args=_args, kwargs=_kwargs)
         threads.add(thread)
         thread.start()
         count -= 1
@@ -203,7 +204,7 @@ def send_ticker_data(websocket, thread_id, **kwargs) -> None:
             time.sleep(default["alive_threads_viewing_delay"])
             continue
         _args, _kwargs = [websocket, extype.ticker_data, thread_id], {"ticker": ticker, "exchange": exchange}
-        thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
+        thread = threading.Thread(target=make_response, args=_args, kwargs=_kwargs)
         thread.start()
         threads.add(thread)
         count -= 1
@@ -224,7 +225,7 @@ def send_klines(websocket, thread_id, **kwargs) -> None:
     ticker, exchange = kwargs.get("ticker"), kwargs.get("exchange")
     _args = [websocket, extype.klines, thread_id]
     _kwargs = {"ticker": ticker, "interval": interval, "limit": limit}
-    thread = threading.Thread(target=websocket_send, args=_args, kwargs=_kwargs)
+    thread = threading.Thread(target=make_response, args=_args, kwargs=_kwargs)
     thread.start()
     while thread_array_is_alive([thread]):
         time.sleep(default["alive_threads_viewing_delay"])
@@ -251,18 +252,24 @@ def manage(request, websocket):
 
     try:
         s_type, s_data = request['type'], request['data']
-    except KeyError:
+    except (TypeError, AttributeError, KeyError):
         err_msg = (make_error_msg("RPM 0x01")) if request.get("type") is None else make_error_msg("RPM 0x02")
-        websocket_send(websocket, err_msg=err_msg)
+        make_response(websocket, err_msg=err_msg)
+        return
+    except Exception:
+        make_response(websocket, err_msg=make_error_msg("UnErr"))
         return
     try:
         extype = s_data.get("extype", default["extype"])
         if (s_type not in stream_functions) or (extype not in extypes):
-            websocket_send(websocket, err_msg=make_error_msg("WPV 0x06"))
+            make_response(websocket, err_msg=make_error_msg("WPV 0x06"))
             return
         s_data['extype'] = extypes[extype]
-    except TypeError:
-        websocket_send(websocket, err_msg=make_error_msg("WPV 0x04"))
+    except (TypeError, AttributeError, KeyError):
+        make_response(websocket, err_msg=make_error_msg("WPV 0x04"))
+        return
+    except Exception:
+        make_response(websocket, err_msg=make_error_msg("UnErr"))
         return
 
     thread_id = hex(abs(hash(str(request))))
@@ -273,7 +280,10 @@ def manage(request, websocket):
     try:
         count, timeout = int(request.get('count', default["count"])), float(request.get('timeout', default["timeout"]))
     except (ValueError, TypeError):
-        websocket_send(websocket, err_msg=make_error_msg("WPV 0x05"))
+        make_response(websocket, err_msg=make_error_msg("WPV 0x05"))
+        return
+    except Exception:
+        make_response(websocket, err_msg=make_error_msg("UnErr"))
         return
 
     kwargs = {
@@ -281,13 +291,14 @@ def manage(request, websocket):
                   "websocket": websocket,
                   "count": count,
                   "timeout": timeout}
+    if "exchange" in s_data:    # try to choose the type of exchange based on the exchange name
+        s_data['extype'] = extypes['crypto'] if s_data['exchange'] in Cryptoex.exchanges else extypes['stock']
     kwargs.update(s_data)
 
     threading.Thread(target=stream_functions.get(s_type), kwargs=kwargs).start()
 
 
 def handle(websocket):
-    print("new client!")
     """
     A function that listens to the requests of the websocket
 
@@ -302,10 +313,10 @@ def handle(websocket):
         try:
             request = json.loads(request)
         except (json.JSONDecodeError, TypeError):
-            websocket_send(websocket, err_msg=make_error_msg("WRF 0x01"))
+            make_response(websocket, err_msg=make_error_msg("WRF 0x01"))
             continue
         if type(request) is not dict:
-            websocket_send(websocket, err_msg=make_error_msg("WRF 0x02"))
+            make_response(websocket, err_msg=make_error_msg("WRF 0x02"))
             continue
         manage(request, websocket)
 
