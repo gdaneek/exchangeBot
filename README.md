@@ -145,12 +145,12 @@ Telegram-бот для получения информации о тикерах
 3. Выбираем тикер или биржу. После выбора тикера и биржи указываем необязательные параметры 
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/2.png)
 
-4. Подтверджаем корректность введённых данных:
+4. Подтверджаем корректность введённых данных: <br>
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/3.png)
 
 		*Если данные введены неверно, бот откинет вас в точку /start*
 
-5.  Получаем результат
+5.  Получаем результат: <br>
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/4.png)
 
 		Результат для ticker_stream:
