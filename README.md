@@ -146,13 +146,23 @@ Telegram-бот для получения информации о тикерах
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/2.png)
 
 4. Подтверджаем корректность введённых данных:
+
+
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/3.png)
+
 
 		*Если данные введены неверно, бот откинет вас в точку /start*
 
-5.  Получаем результат
+5.  Получаем результат:
+
+
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/4.png)
+
+
 		Результат для ticker_stream:
+
+
 		![Image alt](https://github.com/gdaneek/exchangeBot/raw/master/img/5.png)
+
 
 > Бот может попросить вас ввести IP сервера вручную, если запрос окажется неудачным. Если сервер недоступен - укажите IP-адрес (локальный или глобальный) устройства, на котором запущен сервер и попробуйте подключиться ещё раз.
