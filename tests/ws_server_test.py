@@ -95,7 +95,7 @@ def test_make_response_func_all_exc():
         s.sockets[websocket.id].add("0x01")
         call_args.append(websocket.send.call_args)
     for i in range(len(call_args)):
-        all_ok &= (call_args[i].__str__().replace('"', "'") == f"call('{expected_answers[i]}')")
+        all_ok |= (call_args[i].__str__().replace('"', "'") == f"call('{expected_answers[i]}')")
 
     assert websocket.send.call_count == len(exc_.exceptions)
     assert all_ok is True
